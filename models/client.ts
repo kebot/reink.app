@@ -7,7 +7,6 @@ export const db = new Database({
   auth: { username: 'root', password: 'fuckgfw' },
 })
 
-// crud is awesome
 export const articleCollection = db.collection<ArticleData>('articles')
 
 async function queryDocByUrl (url: string) {
@@ -25,7 +24,3 @@ async function queryDocByUrl (url: string) {
 
   return null
 }
-
-// articleCollection
-// _id: articles/8747
-// _key: 8747

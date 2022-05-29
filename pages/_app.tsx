@@ -1,30 +1,11 @@
+import '../styles/globals.css';
 import type { AppProps } from 'next/app'
-import { createTheme, NextUIProvider } from '@nextui-org/react';
 
 import { withTRPC } from '@trpc/next';
-// import { AppType } from 'next/dist/shared/lib/utils';
 import { AppRouter } from './api/trpc/[trpc]';
 
-const darkTheme = createTheme({
-  type: 'light',
-  theme: {
-    fonts: {
-      sans: "SpaceMono Nerd Font",
-      // sans: '"Roboto", sans-serif',
-      mono: '"Roboto Mono", monospace',
-    },
-    colors: {
-      background: '#f9f7f1',
-    }
-  }
-})
-
 function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <NextUIProvider theme={darkTheme}>
-      <Component {...pageProps} />
-    </NextUIProvider>
-  );
+  return <Component {...pageProps} />
 }
 
 export default withTRPC<AppRouter>({

@@ -1,26 +1,46 @@
 import { NextPageContext } from 'next'
 import debug from 'debug'
-import { articleCollection } from '../../models/client'
+import { articleCollection } from 'models/client'
 import { ArticleData } from 'article-parser'
-import { Container, Text } from '@nextui-org/react'
+import { htmlToPortableText } from 'models/html2portabletext'
+import type { PortableTextBlock } from '@portabletext/types'
+import { PortableText } from '@portabletext/react'
 
 const log = debug('article.ssr')
 
-const ArticleView = ({ id, doc }: { id: string; doc: ArticleData }) => {
+const ArticleView = ({
+  id,
+  doc,
+  portableText,
+}: {
+  id: string
+  doc: ArticleData
+  portableText: PortableTextBlock[]
+}) => {
   if (!doc) {
     return <div>no article for {id}</div>
   }
 
   return (
-    <Container>
-      <Text h2>{doc.title}</Text>
+    <div className='container w-full mx-auto'>
+      <h2>{doc.title}</h2>
 
-      <article
-        dangerouslySetInnerHTML={{
-          __html: doc.content || '',
-        }}
-      ></article>
-    </Container>
+      <div className='grid grid-cols-2'>
+        <div className='prose'>
+          <PortableText value={portableText} />
+        </div>
+
+        <article
+          className='prose'
+          dangerouslySetInnerHTML={{
+            __html: doc.content || '',
+          }}
+        ></article>
+
+      </div>
+
+
+    </div>
   )
 }
 
@@ -35,7 +55,11 @@ export async function getServerSideProps(ctx: NextPageContext) {
     log('getDoc finish', doc.url)
 
     return {
-      props: { id: ctx.query.id, doc },
+      props: {
+        id: ctx.query.id,
+        doc,
+        portableText: htmlToPortableText(doc.content || ''),
+      },
     }
   } catch (e) {
     console.error(e)
