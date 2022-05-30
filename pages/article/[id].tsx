@@ -17,29 +17,27 @@ const ArticleView = ({
   doc: ArticleData
   portableText: PortableTextBlock[]
 }) => {
+  const usePortable = false
+
   if (!doc) {
     return <div>no article for {id}</div>
   }
 
   return (
-    <div className='container w-full mx-auto'>
+    <div className='container mx-auto p-4 font-serif prose'>
       <h2>{doc.title}</h2>
 
-      <div className='grid grid-cols-2'>
-        <div className='prose'>
+      {!usePortable && <article
+        dangerouslySetInnerHTML={{
+          __html: doc.content || '',
+        }}
+      ></article>}
+
+      {usePortable && <div className='grid grid-cols-2'>
+        <div className='card prose'>
           <PortableText value={portableText} />
         </div>
-
-        <article
-          className='prose'
-          dangerouslySetInnerHTML={{
-            __html: doc.content || '',
-          }}
-        ></article>
-
-      </div>
-
-
+      </div>}
     </div>
   )
 }

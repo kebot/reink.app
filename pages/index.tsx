@@ -1,10 +1,14 @@
+import type { NextPageContext } from 'next'
 import Head from 'next/head'
+import Link from 'next/link'
 import { InstagramEmbed } from 'react-social-media-embed'
-// import { useEffect } from 'react'
-// import { Database, aql } from 'arangojs'
-// import debug from 'debug'
 import { trpc } from '../utils/trpc'
 import { useForm } from 'react-hook-form'
+import { articleCollection, db, Article } from 'models/client'
+import { aql } from 'arangojs'
+import debug from 'debug'
+
+const log = debug('pages/index')
 
 const IGEmbed = () => {
   return (
@@ -34,11 +38,11 @@ const SaveArticleInput = () => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <input 
+      <input
         type='text'
         placeholder='https://'
-        className='input input-ghost w-full max-w-xs' 
-        {...register("url", {required: true, maxLength: 80})}
+        className='input input-ghost w-full max-w-xs'
+        {...register('url', { required: true, maxLength: 80 })}
       />
 
       <button type='submit' className='btn btn-ghost'>
@@ -48,7 +52,7 @@ const SaveArticleInput = () => {
   )
 }
 
-export default function Home() {
+export default function Home({ articles }: { articles: Article[] }) {
   return (
     <>
       <Head>
@@ -60,7 +64,7 @@ export default function Home() {
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <div className='container mx-auto py-12'>
+      <div className='container mx-auto p-4 py-12'>
         <h1 className='text-center font-serif font-light tracking-widest text-6xl uppercase mb-4'>
           Keith Yao
         </h1>
@@ -69,22 +73,47 @@ export default function Home() {
 
         <SaveArticleInput />
 
-        <div className='columns-2 p-2 font-serif text-justify'>
-          <p>
-            Sometimes, Internet users land themselves in an uncommon situation where an app or
-            website can be used for both work and personal situations. Well, a young front-end
-            designer was spending up to 13 hours on the site, Codepen for work and her hobby, which
-            unfortunately, is also coding. The designer, whose work includes a To-Do Terrarium,
-            clarified, "Well, I didn't have to use it for work but it was already part of my
-            workflow. It just made sense as it was more efficient." The biggest issue, she said, is
-            that she would hop on Codepen for work, but would get distracted by pens made by others
-            in the community for unexpectedly long periods of time, which then causes her to spend
-            even more time on the site. "I mean, that's terrible right?" she asked. Codepen, which
-            brands itself as the best place to build, test, and discover front-end code, has
-            declined to comment at this time.
-          </p>
+        <div className='pt-4 font-serif'>
+          {articles &&
+            articles.map((doc) => {
+              return (
+                <div key={doc._key} className='mb-4'>
+                  <h2 className='card-title font-serif'>{doc.title}</h2>
+                  <p>
+                    {doc.description}
+                    <Link href={`/article/${doc._key}`}>
+                      <a className="link ml-2">Read more...</a>
+                    </Link>
+                  </p>
+
+                </div>
+              )
+            })}
         </div>
+
+        <div className='columns-2 p-2 font-serif text-justify'></div>
       </div>
     </>
   )
+}
+
+export async function getServerSideProps(ctx: NextPageContext) {
+  try {
+    const r = await db.query(aql`
+      for doc in ${articleCollection}
+        LIMIT 10
+        return doc
+    `)
+
+    const articles = await r.all()
+
+    return {
+      props: {
+        articles,
+      },
+    }
+  } catch (e) {
+    console.error(e)
+    return { props: { id: ctx.query.id as string, doc: null } }
+  }
 }

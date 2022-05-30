@@ -7,7 +7,10 @@ export const db = new Database({
   auth: { username: 'root', password: 'fuckgfw' },
 })
 
+
 export const articleCollection = db.collection<ArticleData>('articles')
+
+export type Article = Awaited<ReturnType<typeof articleCollection.document>>
 
 async function queryDocByUrl (url: string) {
   const r = await db.query(aql`
