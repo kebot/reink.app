@@ -24,20 +24,33 @@ const ArticleView = ({
   }
 
   return (
-    <div className='container mx-auto p-4 font-serif prose'>
+    <div
+      className='container p-4 mx-auto font-serif prose h-screen overflow-scroll'
+      style={{
+        columns: '393px 1',
+        columnGap: 32
+      }}
+
+      onClick
+
+    >
       <h2>{doc.title}</h2>
 
-      {!usePortable && <article
-        dangerouslySetInnerHTML={{
-          __html: doc.content || '',
-        }}
-      ></article>}
+      {!usePortable && (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: doc.content || '',
+          }}
+        ></div>
+      )}
 
-      {usePortable && <div className='grid grid-cols-2'>
-        <div className='card prose'>
-          <PortableText value={portableText} />
+      {usePortable && (
+        <div className='grid grid-cols-2'>
+          <div className='card prose'>
+            <PortableText value={portableText} />
+          </div>
         </div>
-      </div>}
+      )}
     </div>
   )
 }
