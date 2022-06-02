@@ -16,7 +16,6 @@ export const appRouter = trpc
       .nullish(),
     resolve({ input }) {
       log("/hello %o", input)
-
       return {
         greeting: `hello ${input?.text ?? 'world'}`,
       };
