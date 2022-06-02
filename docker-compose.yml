@@ -9,14 +9,22 @@ services:
       # - ARANGO_RANDOM_ROOT_PASSWORD=1
       - ARANGO_ROOT_PASSWORD=fuckgfw
     volumes:
-      - ./data:/var/lib/arangodb3
+      - arangodb_data_container:/var/lib/arangodb3
+      - arangodb_apps_data_container:/var/lib/arangodb3-apps
     command:
       - arangod
       - --server.endpoint=tcp://0.0.0.0:8529
-      - --http.trusted-origin=* # this will allow client JavaScript access
+      # - --http.trusted-origin=* # this will allow client JavaScript access
   web:
     build:
       context: "./"
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
+    environment:
+      - NODE_ENV=production
+      - VERCEL_URL=reink.app
+volumes:
+  arangodb_data_container:
+  arangodb_apps_data_container:
+
