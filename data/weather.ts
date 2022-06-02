@@ -49,7 +49,7 @@ const iconToImage = (icon: string) => {
   return `https://openweathermap.org/img/wn/${icon}@2x.png`
 }
 
-async function getWeatherData () {
+export async function getWeatherData () {
   return weatherData
   // const r = await fetch('https://api.openweathermap.org/data/2.5/weather?lat=52.5311881&lon=13.3700883&appid=4d2ef9b7e9acb58a935ad59724cfe7fa&units=metric')
   // return await r.json()
