@@ -6,6 +6,8 @@ import { ArticleData } from 'article-parser'
 import { htmlToPortableText } from 'models/html2portabletext'
 import type { PortableTextBlock } from '@portabletext/types'
 import { PortableText } from '@portabletext/react'
+import { useKey } from 'react-use'
+import { useSwipeable } from 'react-swipeable'
 
 const log = debug('ArticleView')
 
@@ -31,9 +33,7 @@ const ArticleView = ({
     }
     const node = frameRef.current
 
-    const totalPage = Math.round(
-      (node.scrollWidth - node.offsetWidth) / node.offsetWidth + 1
-    )
+    const totalPage = Math.round((node.scrollWidth - node.offsetWidth) / node.offsetWidth + 1)
 
     setPage([0, totalPage])
   }, [frameRef, setPage])
@@ -64,53 +64,65 @@ const ArticleView = ({
     frameRef.current.scrollTo(frameRef.current.offsetWidth * currentPage, 0)
   }, [currentPage])
 
+  // Keyboard Shortcuts
+  useKey('ArrowRight', nextPage, { event: 'keyup' }, [nextPage])
+  useKey('ArrowLeft', prevPage, { event: 'keyup' }, [prevPage])
+
+  // Touch Gesture
+  const handlers = useSwipeable({
+    onSwipedLeft: nextPage,
+    onSwipedRight: prevPage,
+  })
+
   if (!doc) {
     return <div>no article for {id}</div>
   }
 
   return (
-    <div
-      className='container p-4 mx-auto font-serif prose h-screen overflow-hidden'
-      style={{
-        columns: `${frameRef?.current?.offsetWidth || 100}px 1`,
-        columnGap: PAGE_GAP,
-      }}
-      ref={frameRef}
-      onPointerUp={(e) => {
-        if (!frameRef.current) return
-        const frameWidth = frameRef.current.offsetWidth
+    <div {...handlers}>
+      <div
+        className='container p-4 mx-auto font-serif prose h-screen overflow-hidden'
+        style={{
+          columns: `${frameRef?.current?.offsetWidth || 100}px 1`,
+          columnGap: PAGE_GAP,
+        }}
+        ref={frameRef}
+        onPointerUp={(e) => {
+          if (!frameRef.current) return
+          const frameWidth = frameRef.current.offsetWidth
 
-        if (e.clientX < frameWidth / 3) {
-          console.log('pageLeft', e.clientX, frameWidth)
-          prevPage()
-        } else if (e.clientX > (frameWidth / 3) * 2) {
-          console.log('pageRight', e.clientX, frameWidth)
-          nextPage()
-        } else {
-          console.log('just a click')
-        }
-      }}
-    >
-      <h2>{doc.title}</h2>
+          if (e.clientX < frameWidth / 3) {
+            console.log('pageLeft', e.clientX, frameWidth)
+            prevPage()
+          } else if (e.clientX > (frameWidth / 3) * 2) {
+            console.log('pageRight', e.clientX, frameWidth)
+            nextPage()
+          } else {
+            console.log('just a click')
+          }
+        }}
+      >
+        <h2>{doc.title}</h2>
 
-      {!usePortable && (
-        <div
-          dangerouslySetInnerHTML={{
-            __html: doc.content || '',
-          }}
-        ></div>
-      )}
+        {!usePortable && (
+          <div
+            dangerouslySetInnerHTML={{
+              __html: doc.content || '',
+            }}
+          ></div>
+        )}
 
-      {usePortable && (
-        <div className='grid grid-cols-2'>
-          <div className='card prose'>
-            <PortableText value={portableText} />
+        {usePortable && (
+          <div className='grid grid-cols-2'>
+            <div className='card prose'>
+              <PortableText value={portableText} />
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      <div className='fixed bottom-0 right-0'>
-        {currentPage + 1} / {totalPage}
+        <div className='fixed bottom-0 right-0'>
+          {currentPage + 1} / {totalPage}
+        </div>
       </div>
     </div>
   )

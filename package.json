@@ -33,6 +33,8 @@
     "react-hook-form": "^7.31.3",
     "react-query": "^3.39.1",
     "react-social-media-embed": "^2.2.2",
+    "react-swipeable": "^7.0.0",
+    "react-use": "^17.4.0",
     "zod": "^3.17.3"
   },
   "devDependencies": {

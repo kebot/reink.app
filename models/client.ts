@@ -1,12 +1,11 @@
 import { Database, aql }  from 'arangojs';
-import { ArticleData } from 'article-parser'
+import type { ArticleData } from 'article-parser'
 
 export const db = new Database({
   url: 'http://192.168.1.111:8529',
   databaseName: 'main',
   auth: { username: 'root', password: 'fuckgfw' },
 })
-
 
 export const articleCollection = db.collection<ArticleData>('articles')
 
