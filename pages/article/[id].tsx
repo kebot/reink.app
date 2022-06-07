@@ -1,25 +1,15 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import { NextPageContext } from 'next'
 import debug from 'debug'
 import { articleCollection } from 'models/client'
 import { ArticleData } from 'article-parser'
-import { htmlToPortableText } from 'models/html2portabletext'
-import type { PortableTextBlock } from '@portabletext/types'
-import { PortableText } from '@portabletext/react'
 import { useKey } from 'react-use'
 import { useSwipeable } from 'react-swipeable'
+import parse, { domToReact, attributesToProps } from 'html-react-parser'
 
 const log = debug('ArticleView')
 
-const ArticleView = ({
-  id,
-  doc,
-  portableText,
-}: {
-  id: string
-  doc: ArticleData
-  portableText: PortableTextBlock[]
-}) => {
+const ArticleView = ({ id, doc }: { id: string; doc: ArticleData }) => {
   const usePortable = false
   const PAGE_GAP = 32
 
@@ -74,6 +64,17 @@ const ArticleView = ({
     onSwipedRight: prevPage,
   })
 
+  const content = useMemo(() => {
+    return parse(doc?.content || '', {
+      replace: (domNode: any) => {
+        if (domNode.type === 'tag' && domNode?.name === 'a') {
+          console.dir(domNode, { depth: 1 })
+          return <span className='underline'>{domToReact(domNode.children)}</span>
+        }
+      },
+    })
+  }, [doc?.content])
+
   if (!doc) {
     return <div>no article for {id}</div>
   }
@@ -81,7 +82,7 @@ const ArticleView = ({
   return (
     <div {...handlers}>
       <div
-        className='container p-4 mx-auto font-serif prose h-screen overflow-hidden'
+        className='container p-4 mx-auto font-serif h-screen overflow-hidden prose prose-neutral text-justify'
         style={{
           columns: `${frameRef?.current?.offsetWidth || 100}px 1`,
           columnGap: PAGE_GAP,
@@ -104,21 +105,7 @@ const ArticleView = ({
       >
         <h2>{doc.title}</h2>
 
-        {!usePortable && (
-          <div
-            dangerouslySetInnerHTML={{
-              __html: doc.content || '',
-            }}
-          ></div>
-        )}
-
-        {usePortable && (
-          <div className='grid grid-cols-2'>
-            <div className='card prose'>
-              <PortableText value={portableText} />
-            </div>
-          </div>
-        )}
+        {content}
 
         <div className='fixed bottom-0 right-0'>
           {currentPage + 1} / {totalPage}
@@ -142,7 +129,6 @@ export async function getServerSideProps(ctx: NextPageContext) {
       props: {
         id: ctx.query.id,
         doc,
-        portableText: htmlToPortableText(doc.content || ''),
       },
     }
   } catch (e) {
