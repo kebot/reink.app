@@ -25,10 +25,12 @@
     "article-parser": "^6.0.1",
     "debug": "^4.3.4",
     "html-react-parser": "^1.4.14",
+    "instapaper-node-sdk": "^2.0.1",
     "jsdom": "^19.0.0",
     "lowdb": "^3.0.0",
     "nanoid": "^3.3.4",
     "next": "12.1.6",
+    "oauth-1.0a": "^2.2.6",
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-hook-form": "^7.31.3",
@@ -36,6 +38,7 @@
     "react-social-media-embed": "^2.2.2",
     "react-swipeable": "^7.0.0",
     "react-use": "^17.4.0",
+    "typeorm": "^0.3.7",
     "zod": "^3.17.3"
   },
   "devDependencies": {

@@ -10,7 +10,6 @@ import parse, { domToReact, attributesToProps } from 'html-react-parser'
 const log = debug('ArticleView')
 
 const ArticleView = ({ id, doc }: { id: string; doc: ArticleData }) => {
-  const usePortable = false
   const PAGE_GAP = 32
 
   const frameRef = useRef<HTMLDivElement>(null)

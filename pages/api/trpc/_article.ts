@@ -2,7 +2,7 @@ import * as trpc from '@trpc/server';
 import { z } from 'zod';
 import debug from 'debug'
 import { extract } from 'article-parser'
-import { db, articleCollection } from '../../../models/client';
+import { db, articleCollection } from '../../../models/arangodb-client';
 import { aql }  from 'arangojs';
 
 // https://github.com/mozilla/readability
