@@ -85,8 +85,6 @@ export default function Home({ articles }: { articles: Article[] }) {
           </div>
         </div>
 
-        <SaveArticleInput />
-
         <div className='pt-4 font-serif'>
           {articles &&
             articles.map((doc) => {

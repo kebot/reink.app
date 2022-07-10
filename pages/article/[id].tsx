@@ -1,29 +1,28 @@
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import { NextPageContext } from 'next'
 import debug from 'debug'
-import { articleCollection } from 'models/client'
-import { ArticleData } from 'article-parser'
 import { useKey } from 'react-use'
 import { useSwipeable } from 'react-swipeable'
 import parse, { domToReact, attributesToProps } from 'html-react-parser'
+import { trpc } from 'utils/trpc'
 
 const log = debug('ArticleView')
 
-const ArticleView = ({ id, doc }: { id: string; doc: ArticleData }) => {
+const ArticleView = ({ id }: { id: string }) => {
+  const result = trpc.useQuery(['instapaper.getText', { bookmarkId: id }])
+  const doc = { content: result.data, title: 'Unknown' }
+
   const PAGE_GAP = 32
-
   const frameRef = useRef<HTMLDivElement>(null)
-
   const [[currentPage, totalPage], setPage] = useState<[number, number]>([0, 1])
 
   useEffect(() => {
     if (!frameRef.current) {
       return
     }
+
     const node = frameRef.current
-
     const totalPage = Math.round((node.scrollWidth - node.offsetWidth) / node.offsetWidth + 1)
-
     setPage([0, totalPage])
   }, [frameRef, setPage])
 
@@ -119,16 +118,10 @@ export async function getServerSideProps(ctx: NextPageContext) {
 
   try {
     log('getDoc', ctx.query.id)
-
-    const doc = await articleCollection.document(ctx.query.id as string)
-
-    log('getDoc finish', doc.url)
+    const [type, id] = (ctx.query.id as string)?.split('-')
 
     return {
-      props: {
-        id: ctx.query.id,
-        doc,
-      },
+      props: { type, id },
     }
   } catch (e) {
     console.error(e)

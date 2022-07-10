@@ -83,7 +83,7 @@ const Connect = () => {
             />
           </div>
 
-          {mutation.isError && <div className='mt-4 text-error underline'>{mutation.error.message}</div>}
+          {mutation.isError && <div className='mt-4 text-error underline'>⚠️{mutation.error.message}</div>}
 
           <div className='form-control mt-2'>
             <button type='submit' className='btn btn-primary'>
