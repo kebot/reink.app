@@ -3,6 +3,7 @@ import * as trpcNext from '@trpc/server/adapters/next';
 import { z } from 'zod';
 import debug from 'debug'
 import instapaper from './_article'
+import auth from './_auth'
 
 const log = debug('trpc')
 
@@ -21,6 +22,7 @@ export const appRouter = trpc
       };
     },
   })
+  .merge('auth.', auth)
   .merge('article.', instapaper)
 
 // export type definition of API
