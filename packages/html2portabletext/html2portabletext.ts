@@ -4,8 +4,6 @@ import { htmlToBlocks } from '@sanity/block-tools'
 import Schema from '@sanity/schema'
 import { JSDOM } from 'jsdom'
 
-// TODO for now
-
 // Code Block, Image
 // https://www.npmjs.com/package/prism-react-renderer
 const defaultSchema = Schema.compile({

@@ -18,9 +18,19 @@ export const Pager = ({ children }: { children: React.ReactNode }) => {
       return
     }
 
-    const node = frameRef.current
-    const totalPage = Math.round((node.scrollWidth - node.offsetWidth) / node.offsetWidth + 1)
-    setPage([0, totalPage])
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.target === frameRef.current) {
+          const node = frameRef.current
+          const totalPage = Math.round((node.scrollWidth - node.offsetWidth) / node.offsetWidth + 1)
+          setPage([0, totalPage])
+        }
+      }
+    })
+
+    resizeObserver.observe(frameRef.current)
+
+    return () => resizeObserver.disconnect()
   }, [frameRef, setPage])
 
   const nextPage = useCallback(() => {
