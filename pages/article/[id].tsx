@@ -20,7 +20,7 @@ const ArticleView = ({ id }: { id: string }) => {
     return parse(data || '', {
       replace: (domNode: any) => {
         if (domNode.type === 'tag' && domNode?.name === 'a') {
-          console.dir(domNode, { depth: 1 })
+          // console.dir(domNode, { depth: 1 })
           return <span className='underline'>{domToReact(domNode.children)}</span>
         }
       },
@@ -29,7 +29,6 @@ const ArticleView = ({ id }: { id: string }) => {
 
   if (isLoading) {
     return <div>loading...</div>
-
   }
 
   if (!content) {

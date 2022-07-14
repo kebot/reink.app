@@ -5,10 +5,11 @@ import { useSwipeable } from 'react-swipeable'
 
 const log = debug('Pager')
 
-export const Pager = ({ children }: { children: React.ReactNode }) => {
-  log('render')
+const PAGE_GAP = 32
 
-  const PAGE_GAP = 32
+export const Pager = ({ children }: { children: React.ReactNode }) => {
+  log('start-render')
+
   const frameRef = useRef<HTMLDivElement>(null)
   const [[currentPage, totalPage], setPage] = useState<[number, number]>([0, 1])
 
@@ -61,7 +62,7 @@ export const Pager = ({ children }: { children: React.ReactNode }) => {
   return (
     <div {...handlers}>
       <div
-        className='container p-4 mx-auto font-serif h-screen overflow-hidden prose prose-neutral text-justify'
+        className='container p-4 mx-auto font-serif h-screen overflow-hidden prose prose-neutral text-justify border'
         style={{
           columns: `${frameRef?.current?.offsetWidth || 100}px 1`,
           columnGap: PAGE_GAP,
