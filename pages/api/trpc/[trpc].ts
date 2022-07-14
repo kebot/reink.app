@@ -24,8 +24,7 @@ export const appRouter = trpc
     },
   })
   .merge('auth.', auth)
-  // @TODO fix type here
-  .merge('instapaper.', instapaper as unknown as any)
+  .merge('instapaper.', instapaper)
 
 export type AppRouter = typeof appRouter
 

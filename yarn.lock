@@ -807,32 +807,32 @@
   resolved "https://registry.yarnpkg.com/@tootallnate/once/-/once-2.0.0.tgz#f544a148d3ab35801c1f633a7441fd87c2e484bf"
   integrity sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==
 
-"@trpc/client@^9.24.0":
-  version "9.24.0"
-  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-9.24.0.tgz#39b86e4c89dfe43a3afd15003f8a7bbeedbb8011"
-  integrity sha512-ECrn/h8c4Af1ubY9XgNpTZf84mUzDPZRVBhgkgBQXZsvTO3FWkVKcYRoJV6w/sOs3PkaNjQuv2fjzgIErXN6QA==
+"@trpc/client@^9.26.0":
+  version "9.26.0"
+  resolved "https://registry.yarnpkg.com/@trpc/client/-/client-9.26.0.tgz#d50a84f2b6a912d3039b52a08d16fde10f4de63c"
+  integrity sha512-zkKXkqZIKseXqybBU8U4odcGCTtDBG/Gu04mfMJ8UyzpG12uzZ5xRkbuufRChgx1oA27/mi3aW/8h6mI34cxyA==
   dependencies:
     "@babel/runtime" "^7.9.0"
 
-"@trpc/next@^9.24.0":
-  version "9.24.0"
-  resolved "https://registry.yarnpkg.com/@trpc/next/-/next-9.24.0.tgz#cd1614e4abff87a4562066222343ba73d0387a99"
-  integrity sha512-F57kuTSIPkJvkc2AiGF4oeGCuyFptgdujxIMA/oxYicTaXQ332usVq2LV0LD+woQ4VHT3Rsgs7EwPf36GpA0PQ==
+"@trpc/next@^9.26.0":
+  version "9.26.0"
+  resolved "https://registry.yarnpkg.com/@trpc/next/-/next-9.26.0.tgz#f17bed393e6bd24020356103f1e553af3cc4a4b3"
+  integrity sha512-fi3h/FbxhMUbjz/Z6ebBZLm4l+tGBNP4Q60lLwMxOXye71+XJre/T+csGQaUjI0bfDephGonZAW88giKqo4YQA==
   dependencies:
     "@babel/runtime" "^7.9.0"
     react-ssr-prepass "^1.5.0"
 
-"@trpc/react@^9.24.0":
-  version "9.24.0"
-  resolved "https://registry.yarnpkg.com/@trpc/react/-/react-9.24.0.tgz#73b2be09155939179eb7e7fdd0ac56c0415fab94"
-  integrity sha512-ekcSJ048glcBZlP9Szg9j3WETUiwAwNjNNLr1VQPWnXkQxr8uqCWMCTD6TIlKSCJE9rLMhToFXdg/AeZXeeHsg==
+"@trpc/react@^9.26.0":
+  version "9.26.0"
+  resolved "https://registry.yarnpkg.com/@trpc/react/-/react-9.26.0.tgz#3dff7a1fe2f0edce56ad4f5f9ebad2fc87d2d11a"
+  integrity sha512-1JcfRpRMH2KFvJlm9cXD+RMFe7HtxmKn3HiSY1AVQiRMA7yxxmMnRWvezbnMvQ1LzvmfnlTwC46z6c3+u/MWvA==
   dependencies:
     "@babel/runtime" "^7.9.0"
 
-"@trpc/server@^9.24.0":
-  version "9.24.0"
-  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-9.24.0.tgz#4b02090af8283600a0237457968997d1c7f55aca"
-  integrity sha512-yrWMXl6kTgd3o1zE8zkw10KttY8xeilZRvxlpXhLGeeGaBqfvWdU+ljpBK1eSC5j9uDJrMc1gaNqtA++B8Zoqg==
+"@trpc/server@^9.26.0":
+  version "9.26.0"
+  resolved "https://registry.yarnpkg.com/@trpc/server/-/server-9.26.0.tgz#dcd330c0f337bcf18a60dfb8c82a764f4b8ddfc9"
+  integrity sha512-aQgGkcAln9leq/Ab5X5AOWci0BNiy4oGcEqXCWs5Q7sZ1gd5Y3OzQV5tnY6fPsWSRjuvkb45Syq2AkFpX0q0/w==
 
 "@tsconfig/node10@^1.0.7":
   version "1.0.8"
