@@ -19,9 +19,12 @@ export default withTRPC<AppRouter>({
      * If you want to use SSR, you need to use the server's full URL
      * @link https://trpc.io/docs/ssr
      */
-    const url = process.env.VERCEL_URL
-      ? `https://${process.env.VERCEL_URL}/api/trpc`
-      : '/api/trpc';
+
+    let url = 'http://localhost:3000/api/trpc'
+
+    if (process.env.NODE_ENV !== 'development') {
+      url = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}/api/trpc` : '/api/trpc'
+    }
 
     return {
       url,
@@ -29,11 +32,11 @@ export default withTRPC<AppRouter>({
        * @link https://react-query.tanstack.com/reference/QueryClient
        */
       // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
-      headers () {
+      headers() {
         // natively on client, cookies are passed by default, but not on server
         const cookie = ctx?.req?.headers?.cookie
         return { cookie }
-      }
+      },
     }
   },
   /**
