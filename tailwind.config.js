@@ -19,5 +19,5 @@ module.exports = {
   },
 
   // tweak some browsers
-  important: true,
+  // important: true,
 }
