@@ -13,11 +13,12 @@ function getFrameWidth(el: HTMLElement) {
   return el.getBoundingClientRect().width - PAGE_PADDING * 2 + PAGE_GAP
 }
 
-export const Pager = ({ children }: { children: React.ReactNode }) => {
+export const Pager = ({ children, menu }: { children: React.ReactNode; menu: React.ReactNode }) => {
   log('start-render')
 
   const frameRef = useRef<HTMLDivElement>(null)
   const [[currentPage, totalPage], setPage] = useState<[number, number]>([0, 1])
+  const [menuVisible, setMenuVisible] = useState(false)
 
   useEffect(() => {
     if (!frameRef.current) {
@@ -86,7 +87,7 @@ export const Pager = ({ children }: { children: React.ReactNode }) => {
       console.log('pageRight', e.clientX, frameWidth)
       nextPage()
     } else {
-      console.log('just a click')
+      setMenuVisible(!menuVisible)
     }
   }
 
@@ -105,6 +106,8 @@ export const Pager = ({ children }: { children: React.ReactNode }) => {
         <div className='absolute bottom-0 right-0'>
           {currentPage + 1} / {totalPage}
         </div>
+
+        {menuVisible && menu}
       </div>
     </div>
   )
