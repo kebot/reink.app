@@ -32,10 +32,14 @@ const ArticleView = ({ id }: { id: string }) => {
   }
 
   if (!content) {
-    return <div>no article for {id}</div>
+    return <div>no article found</div>
   }
 
-  return <Pager>{content}</Pager>
+  return <Pager>
+    <main className='prose prose-neutral text-justify font-serif'>
+      {content}
+    </main>
+  </Pager>
 }
 
 export async function getServerSideProps(ctx: NextPageContext) {

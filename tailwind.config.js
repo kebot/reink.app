@@ -5,9 +5,14 @@ module.exports = {
     "./packages/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-
-    },
+    extend: {},
   },
   plugins: [require("@tailwindcss/typography"), require("daisyui")],
+
+  daisyui: {
+    themes: ['lofi']
+  },
+
+  // tweak some browsers
+  important: true
 }

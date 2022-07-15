@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState, useEffect, useCallback, PointerEventHandler } from 'react'
 import debug from 'debug'
 import { useKey } from 'react-use'
 import { useSwipeable } from 'react-swipeable'
@@ -6,6 +6,12 @@ import { useSwipeable } from 'react-swipeable'
 const log = debug('Pager')
 
 const PAGE_GAP = 32
+const PAGE_PADDING = 14
+
+function getFrameWidth(el: HTMLElement) {
+  // Layout: padding - page1 - gap - page2 - gap .... - pageN - padding
+  return el.getBoundingClientRect().width - PAGE_PADDING * 2 + PAGE_GAP
+}
 
 export const Pager = ({ children }: { children: React.ReactNode }) => {
   log('start-render')
@@ -56,7 +62,7 @@ export const Pager = ({ children }: { children: React.ReactNode }) => {
 
     debug('goingTo')(currentPage)
 
-    frameRef.current.scrollTo(frameRef.current.offsetWidth * currentPage, 0)
+    frameRef.current.scrollTo(getFrameWidth(frameRef.current) * currentPage, 0)
   }, [currentPage])
 
   // Keyboard Shortcuts
@@ -69,32 +75,34 @@ export const Pager = ({ children }: { children: React.ReactNode }) => {
     onSwipedRight: prevPage,
   })
 
+  const handleTap: PointerEventHandler = (e) => {
+    if (!frameRef.current) return
+    const frameWidth = frameRef.current.offsetWidth
+
+    if (e.clientX < frameWidth / 3) {
+      console.log('pageLeft', e.clientX, frameWidth)
+      prevPage()
+    } else if (e.clientX > (frameWidth / 3) * 2) {
+      console.log('pageRight', e.clientX, frameWidth)
+      nextPage()
+    } else {
+      console.log('just a click')
+    }
+  }
+
   return (
     <div {...handlers}>
       <div
-        className='container p-4 mx-auto font-serif h-screen overflow-hidden prose prose-neutral text-justify border'
+        className='container p-4 mx-auto h-screen overflow-hidden'
         style={{
           columns: `${frameRef?.current?.offsetWidth || 100}px 1`,
           columnGap: PAGE_GAP,
         }}
         ref={frameRef}
-        onPointerUp={(e) => {
-          if (!frameRef.current) return
-          const frameWidth = frameRef.current.offsetWidth
-
-          if (e.clientX < frameWidth / 3) {
-            console.log('pageLeft', e.clientX, frameWidth)
-            prevPage()
-          } else if (e.clientX > (frameWidth / 3) * 2) {
-            console.log('pageRight', e.clientX, frameWidth)
-            nextPage()
-          } else {
-            console.log('just a click')
-          }
-        }}
+        onPointerUp={handleTap}
       >
         {children}
-        <div className='fixed bottom-0 right-0'>
+        <div className='absolute bottom-0 right-0'>
           {currentPage + 1} / {totalPage}
         </div>
       </div>
