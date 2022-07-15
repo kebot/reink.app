@@ -11,6 +11,7 @@
     "deploy": "DOCKER_HOST=ssh://nas docker compose up --build"
   },
   "dependencies": {
+    "@floating-ui/react-dom-interactions": "^0.6.6",
     "@ory/client": "^0.0.1-alpha.187",
     "@ory/integrations": "^0.2.6",
     "@portabletext/react": "^1.0.6",
@@ -28,7 +29,6 @@
     "html-react-parser": "^1.4.14",
     "instapaper-node-sdk": "^2.0.1",
     "jsdom": "^19.0.0",
-    "lowdb": "^3.0.0",
     "nanoid": "^3.3.4",
     "next": "12.1.6",
     "oauth-1.0a": "^2.2.6",
