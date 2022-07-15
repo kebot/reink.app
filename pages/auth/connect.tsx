@@ -23,7 +23,9 @@ const Connect = () => {
 
   const mutation = trpc.useMutation(['auth.connectInstapaper'], {
     onSuccess: (data) => {
-      setCookie(COOKIE_NAME_INSTAPAPER_TOKEN, data.token)
+      setCookie(COOKIE_NAME_INSTAPAPER_TOKEN, data.token, {
+        maxAge: 365 * 24 * 60 * 60, // 1 year
+      })
       router.push('/')
     },
   })
