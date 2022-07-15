@@ -14,7 +14,6 @@ const log = debug('ArticleView')
 // TODO more button -> share (web share api)
 
 const PageNav = () => {
-
   return <div className='btm-nav border absolute bottom-0 left-0 right-0'>
     <Link href='/'>
       <a title='home'>
