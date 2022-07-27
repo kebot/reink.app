@@ -14,7 +14,6 @@ function getFrameWidth(el: HTMLElement) {
 }
 
 // fact: window.innerHeight will be the actually 100vh for mobile devices
-
 export const Pager = ({ children, menu }: { children: React.ReactNode; menu: React.ReactNode }) => {
   log('start-render')
 
@@ -81,6 +80,12 @@ export const Pager = ({ children, menu }: { children: React.ReactNode; menu: Rea
 
   const handleTap: PointerEventHandler = (e) => {
     if (!frameRef.current) return
+
+    if (menuVisible) {
+      setMenuVisible(false)
+      return
+    }
+
     const frameWidth = frameRef.current.offsetWidth
 
     if (e.clientX < frameWidth / 3) {
@@ -93,7 +98,6 @@ export const Pager = ({ children, menu }: { children: React.ReactNode; menu: Rea
       setMenuVisible(!menuVisible)
     }
   }
-
 
   return (
     <div {...handlers}>
@@ -112,7 +116,9 @@ export const Pager = ({ children, menu }: { children: React.ReactNode; menu: Rea
           {currentPage + 1} / {totalPage}
         </div>
 
-        {menuVisible && menu}
+        <div onPointerUp={(e) => e.stopPropagation()}>
+          {menuVisible && menu}
+        </div>
       </div>
     </div>
   )
