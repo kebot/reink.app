@@ -1,8 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  swcMinify: true,
   images: {
-    domains: ['staticinstapaper.s3.dualstack.us-west-2.amazonaws.com']
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.amazonaws.com'
+      }
+    ]
   }
 }
 
