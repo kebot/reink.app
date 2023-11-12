@@ -37,10 +37,8 @@ const PageNav = () => {
     <>
       {panel === 'font' && <FontChooser />}
       <div className='btm-nav border'>
-        <Link href='/'>
-          <a title='home'>
-            <ChevronLeftIcon className='h-6 w-6' />
-          </a>
+        <Link title='home' href='/'>
+          <ChevronLeftIcon className='h-6 w-6' />
         </Link>
 
         <LikeButton />

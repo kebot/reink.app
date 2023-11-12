@@ -43,8 +43,8 @@ const Connect = () => {
   return (
     <div className='container mx-auto font-serif'>
       <div className='navbar bg-base-100'>
-        <Link href='/'>
-          <a className='btn btn-ghost normal-case text-4xl'>ᚱᛖᛁᚾᚲ</a>
+        <Link className='btn btn-ghost normal-case text-4xl' href='/'>
+          ᚱᛖᛁᚾᚲ
         </Link>
       </div>
 

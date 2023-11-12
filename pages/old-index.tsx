@@ -34,8 +34,8 @@ const App = () => {
                   <h2 className='card-title font-serif'>{doc.title}</h2>
                   <p>
                     {doc.description}
-                    <Link href={`/article/instapaper-${doc.bookmark_id}`}>
-                      <a className='link ml-2'>Read more...</a>
+                    <Link className='link ml-2' href={`/article/instapaper-${doc.bookmark_id}`}>
+                      Read more...
                     </Link>
                   </p>
                 </div>
