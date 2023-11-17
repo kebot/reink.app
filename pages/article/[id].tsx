@@ -1,72 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { NextPageContext } from 'next'
 import debug from 'debug'
 import parse, { domToReact, attributesToProps } from 'html-react-parser'
 import { trpc } from 'utils/trpc'
-import { Pager } from 'packages/pager'
-import Link from 'next/link'
-import { ChevronLeftIcon, HeartIcon, ArchiveIcon, DotsVerticalIcon } from '@heroicons/react/outline'
-import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid'
-import { FontChooser } from 'packages/FontChooser'
-import { useGlobalConfig } from 'packages/useSettings'
+import { Pager } from 'src/packages/pager'
+import { useGlobalConfig } from 'src/packages/useSettings'
 import clsx from 'clsx'
+import { PageNav } from './PageNav'
 
 const log = debug('ArticleView')
-
-// FontChooser
-// TODO more button -> open in browser
-// TODO more button -> share (web share api)
-
-const LikeButton = () => {
-  return (
-    <button title='like'>
-      <label className='swap' htmlFor='like'>
-        <input type='checkbox' />
-        <HeartIcon className='swap-off h-6 w-6' />
-        <HeartIconSolid className='swap-on h-6 w-6' />
-      </label>
-    </button>
-  )
-}
-
-const PageNav = () => {
-  type Panel = 'font' | 'more' | undefined
-  const [panel, setPanel] = useState<Panel>(undefined)
-
-  return (
-    <>
-      {panel === 'font' && <FontChooser />}
-      <div className='btm-nav border'>
-        <Link title='home' href='/'>
-          <ChevronLeftIcon className='h-6 w-6' />
-        </Link>
-
-        <LikeButton />
-
-        <button
-          title='font-serif'
-          onClick={() => {
-            if (panel === 'font') {
-              setPanel(undefined)
-            } else {
-              setPanel('font')
-            }
-          }}
-        >
-          Aa
-        </button>
-
-        <button title='archive'>
-          <ArchiveIcon className='h-6 w-6' />
-        </button>
-
-        <button title='more'>
-          <DotsVerticalIcon className='h-6 w-6' />
-        </button>
-      </div>
-    </>
-  )
-}
 
 const ArticleView = ({ id }: { id: string }) => {
   log('render')

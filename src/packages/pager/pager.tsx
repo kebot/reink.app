@@ -6,22 +6,25 @@ import { useSwipeable } from 'react-swipeable'
 const log = debug('Pager')
 
 const PAGE_GAP = 32
-const PAGE_PADDING = 14
+// const PAGE_PADDING = 14
+const PAGE_PADDING = 16
 
 function getFrameWidth(el: HTMLElement) {
   // Layout: padding - page1 - gap - page2 - gap .... - pageN - padding
   return el.getBoundingClientRect().width - PAGE_PADDING * 2 + PAGE_GAP
 }
 
-// fact: window.innerHeight will be the actually 100vh for mobile devices
 export const Pager = ({ children, menu }: { children: React.ReactNode; menu: React.ReactNode }) => {
   log('start-render')
 
+  // page container ref
   const frameRef = useRef<HTMLDivElement>(null)
+
   const [[currentPage, totalPage], setPage] = useState<[number, number]>([0, 1])
-  const [menuVisible, setMenuVisible] = useState(false)
+  const [menuVisible, setMenuVisible] = useState(true)
   const {width, height} = useWindowSize();
 
+  // recalculate total page and current page
   useEffect(() => {
     if (!frameRef.current) {
       return
@@ -65,7 +68,9 @@ export const Pager = ({ children, menu }: { children: React.ReactNode; menu: Rea
 
     debug('goingTo')(currentPage)
 
-    frameRef.current.scrollTo(getFrameWidth(frameRef.current) * currentPage, 0)
+    frameRef.current.scrollTo(
+      getFrameWidth(frameRef.current) * currentPage, 0
+    )
   }, [currentPage])
 
   // Keyboard Shortcuts
@@ -89,10 +94,10 @@ export const Pager = ({ children, menu }: { children: React.ReactNode; menu: Rea
     const frameWidth = frameRef.current.offsetWidth
 
     if (e.clientX < frameWidth / 3) {
-      console.log('pageLeft', e.clientX, frameWidth)
+      // console.log('pageLeft', e.clientX, frameWidth)
       prevPage()
     } else if (e.clientX > (frameWidth / 3) * 2) {
-      console.log('pageRight', e.clientX, frameWidth)
+      // console.log('pageRight', e.clientX, frameWidth)
       nextPage()
     } else {
       setMenuVisible(!menuVisible)
@@ -112,8 +117,9 @@ export const Pager = ({ children, menu }: { children: React.ReactNode; menu: Rea
         onPointerUp={handleTap}
       >
         {children}
+
         <div className='absolute bottom-0 right-0'>
-          {currentPage + 1} / {totalPage}
+          {width} x {height} | {currentPage + 1} / {totalPage}
         </div>
 
         <div onPointerUp={(e) => e.stopPropagation()}>

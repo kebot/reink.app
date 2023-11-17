@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { useGlobalConfig } from 'packages/useSettings'
+import { useGlobalConfig } from 'src/packages/useSettings'
 
 const fontSizes = ['sm', 'base', 'lg', 'xl', '2xl']
 

@@ -1,13 +1,14 @@
 'use client'
 
+import React from 'react'
 import { Provider, Client, cacheExchange, fetchExchange } from 'urql'
 
 const OMNIVORE_API_KEY = '8fade3b3-b50e-48fd-b3f2-0c78eef7c2e0'
-const OMNIVORE_HOST = 'https://api-prod.omnivore.app/api/graphql'
+// const OMNIVORE_HOST = 'https://api-prod.omnivore.app/api/graphql'
 
 function createClient(token: string) {
   return new Client({
-    url: OMNIVORE_HOST,
+    url: '/omnivore-proxy',
     exchanges: [cacheExchange, fetchExchange],
     fetchOptions: () => {
       return {
@@ -17,11 +18,8 @@ function createClient(token: string) {
   })
 }
 
-export function Providers ({ children }) {
-
+export function Providers({ children }: { children: React.ReactElement }) {
   const client = createClient(OMNIVORE_API_KEY)
 
-  return <Provider value={client}>
-    {children}
-  </Provider>
+  return <Provider value={client}>{children}</Provider>
 }

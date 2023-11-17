@@ -6,10 +6,13 @@ type AppConfig = {
 }
 
 const defaultValue: AppConfig = {
-  fontSize: 1,
+  fontSize: 2,
   fontFamily: 'serif',
 }
 
+/**
+ * save user settings in localStorage
+ */
 export const useGlobalConfig = (): [
   AppConfig,
   (key: keyof AppConfig, value: AppConfig[typeof key]) => void,

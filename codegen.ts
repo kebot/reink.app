@@ -2,10 +2,10 @@ import type { CodegenConfig } from '@graphql-codegen/cli';
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: "packages/omnivore/schema.gql",
+  schema: "src/packages/omnivore/schema.gql",
   documents: ["src/**/*.tsx"],
   generates: {
-    "packages/omnivore/gql/": {
+    "src/packages/omnivore/gql/": {
       preset: "client",
       config: {
         "withHooks": true

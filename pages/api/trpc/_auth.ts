@@ -1,7 +1,7 @@
 import * as trpc from '@trpc/server'
 import { z } from 'zod'
 import debug from 'debug'
-import { getAuthToken } from 'packages/instapaper'
+import { getAuthToken } from 'src/app/packages/instapaper'
 
 const log = debug('trpc:auth')
 

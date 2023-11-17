@@ -1,5 +1,5 @@
 import * as trpc from '@trpc/server'
-import { createClient, OAUTH_TOKEN } from 'packages/instapaper'
+import { createClient, OAUTH_TOKEN } from 'src/app/packages/instapaper'
 import { z } from 'zod'
 import debug from 'debug'
 import type { Context } from './_context'
