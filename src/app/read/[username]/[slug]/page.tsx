@@ -7,20 +7,56 @@ import { Pager } from 'src/packages/pager'
 import clsx from 'clsx'
 import { useGlobalConfig } from 'src/packages/useSettings'
 import { PageNav } from './PageNav'
-
-// is sanitize-html needed here?
+import { formatDistanceToNow } from 'date-fns'
 
 const ArticleQuery = graphql(/* GraphQL */ `
   query Article($username: String!, $slug: String!, $format: String!) {
     article(username: $username, slug: $slug, format: $format) {
       ... on ArticleSuccess {
         article {
+          id
+          title
           content
+          savedAt
+          url
+          siteName
+          publishedAt
+          savedAt
+          author
         }
       }
     }
   }
 `)
+
+// TODO use this action
+const SaveArticleReadingProgress = graphql(/* GraphQL */ `
+  mutation SaveArticleReadingProgress($input: SaveArticleReadingProgressInput!) {
+    saveArticleReadingProgress(input: $input) {
+      ... on SaveArticleReadingProgressSuccess {
+        updatedArticle {
+          id
+          readingProgressPercent
+          readingProgressAnchorIndex
+        }
+      }
+      ... on SaveArticleReadingProgressError {
+        errorCodes
+      }
+    }
+  }
+`)
+
+/**
+ * the replace callback will replace an element with another element
+ *     https://www.npmjs.com/package/html-react-parser#replace
+ */
+const replaceTag = (domNode: any) => {
+  if (domNode.type === 'tag' && domNode?.name === 'a') {
+    // external link may not work well on e-ink devices
+    return <span className='underline'>{domToReact(domNode.children)}</span>
+  }
+}
 
 export default function Page({ params }: { params: { slug: string; username: string } }) {
   const [{ data, fetching }] = useQuery({
@@ -37,8 +73,10 @@ export default function Page({ params }: { params: { slug: string; username: str
   const [config] = useGlobalConfig()
 
   if (data?.article.__typename === 'ArticleSuccess') {
+    const { title, content, url, siteName, savedAt, author, id } = data?.article.article
+
     return (
-      <Pager menu={<PageNav />}>
+      <Pager menu={<PageNav linkId={id} />}>
         <article
           className={clsx(
             'prose',
@@ -56,7 +94,16 @@ export default function Page({ params }: { params: { slug: string; username: str
             'prose-neutral text-justify max-w-none'
           )}
         >
-          {parse(data?.article.article.content)}
+          <h1>{title}</h1>
+          <p>
+            {formatDistanceToNow(new Date(savedAt))} ago • {author && `${author} • `}
+            <a href={url} target='_blank'>
+              {siteName}
+            </a>
+          </p>
+          {parse(content, {
+            replace: replaceTag,
+          })}
         </article>
       </Pager>
     )

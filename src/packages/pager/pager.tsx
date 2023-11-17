@@ -5,8 +5,8 @@ import { useSwipeable } from 'react-swipeable'
 
 const log = debug('Pager')
 
+// TODO detect padding/gap by script
 const PAGE_GAP = 32
-// const PAGE_PADDING = 14
 const PAGE_PADDING = 16
 
 function getFrameWidth(el: HTMLElement) {
@@ -22,7 +22,7 @@ export const Pager = ({ children, menu }: { children: React.ReactNode; menu: Rea
 
   const [[currentPage, totalPage], setPage] = useState<[number, number]>([0, 1])
   const [menuVisible, setMenuVisible] = useState(true)
-  const {width, height} = useWindowSize();
+  const { width, height } = useWindowSize()
 
   // recalculate total page and current page
   useEffect(() => {
@@ -68,9 +68,7 @@ export const Pager = ({ children, menu }: { children: React.ReactNode; menu: Rea
 
     debug('goingTo')(currentPage)
 
-    frameRef.current.scrollTo(
-      getFrameWidth(frameRef.current) * currentPage, 0
-    )
+    frameRef.current.scrollTo(getFrameWidth(frameRef.current) * currentPage, 0)
   }, [currentPage])
 
   // Keyboard Shortcuts
@@ -111,20 +109,18 @@ export const Pager = ({ children, menu }: { children: React.ReactNode; menu: Rea
         style={{
           columns: `${frameRef?.current?.offsetWidth || 100}px 1`,
           columnGap: PAGE_GAP,
-          height: height
+          height: height,
         }}
         ref={frameRef}
         onPointerUp={handleTap}
       >
         {children}
 
-        <div className='absolute bottom-0 right-0'>
-          {width} x {height} | {currentPage + 1} / {totalPage}
+        <div className='absolute bottom-1 right-4 font-mono text-xs text-gray-400'>
+          {Math.round(((currentPage + 1) / totalPage) * 100)}%
         </div>
 
-        <div onPointerUp={(e) => e.stopPropagation()}>
-          {menuVisible && menu}
-        </div>
+        <div onPointerUp={(e) => e.stopPropagation()}>{menuVisible && menu}</div>
       </div>
     </div>
   )
