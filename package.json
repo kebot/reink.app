@@ -48,6 +48,7 @@
     "react-social-media-embed": "^2.2.2",
     "react-swipeable": "^7.0.0",
     "react-use": "^17.4.0",
+    "sanitize-html": "^2.11.0",
     "typeorm": "^0.3.7",
     "urql": "^4.0.5",
     "zod": "^3.17.10"
@@ -65,6 +66,7 @@
     "@types/node": "^20.9.0",
     "@types/react": "18.2.37",
     "@types/react-dom": "18.2.15",
+    "@types/sanitize-html": "^2.9.4",
     "autoprefixer": "^10.4.16",
     "daisyui": "^4.0.1",
     "eslint": "8.53.0",
