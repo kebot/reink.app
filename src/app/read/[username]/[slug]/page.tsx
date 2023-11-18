@@ -8,6 +8,7 @@ import clsx from 'clsx'
 import { useGlobalConfig } from 'src/packages/useSettings'
 import { PageNav } from './PageNav'
 import { formatDistanceToNow } from 'date-fns'
+import sanitizeHtml from 'sanitize-html'
 
 const ArticleQuery = graphql(/* GraphQL */ `
   query Article($username: String!, $slug: String!, $format: String!) {
@@ -92,7 +93,7 @@ export default function Page({ params }: { params: { slug: string; username: str
               'font-serif': config.fontFamily === 'serif',
             },
             {
-              'text-justify': false
+              'text-justify': false,
             },
             'prose-neutral max-w-none'
           )}
@@ -104,9 +105,18 @@ export default function Page({ params }: { params: { slug: string; username: str
               {siteName}
             </a>
           </p>
-          {parse(content, {
-            replace: replaceTag,
-          })}
+          {parse(
+            sanitizeHtml(content, {
+              allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
+              allowedAttributes: {
+                ...sanitizeHtml.defaults.allowedAttributes,
+                '*': ['data-omnivore-anchor-idx']
+              }
+            }),
+            {
+              replace: replaceTag,
+            }
+          )}
         </article>
       </Pager>
     )
