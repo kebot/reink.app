@@ -88,6 +88,8 @@ export default function Page({ params }: { params: { slug: string; username: str
               'prose-xl': config.fontSize === 3,
               'prose-2xl': config.fontSize === 4,
             },
+            // e-ink style for code and pre block
+            'prose-pre:bg-gray-200 prose-pre:text-black prose-code:font-mono',
             {
               'font-sans': config.fontFamily === 'sans',
               'font-serif': config.fontFamily === 'serif',
@@ -95,10 +97,10 @@ export default function Page({ params }: { params: { slug: string; username: str
             {
               'text-justify': false,
             },
-            'prose-neutral max-w-none'
+            'prose-neutral max-w-none',
           )}
         >
-          <h1>{title}</h1>
+          <h1 className='font-sans'>{title}</h1>
           <p>
             {formatDistanceToNow(new Date(savedAt))} ago • {author && `${author} • `}
             <a href={url} target='_blank'>
@@ -117,6 +119,9 @@ export default function Page({ params }: { params: { slug: string; username: str
               replace: replaceTag,
             }
           )}
+
+          <p>debug: END</p>
+
         </article>
       </Pager>
     )
