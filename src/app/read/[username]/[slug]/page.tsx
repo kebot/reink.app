@@ -91,7 +91,10 @@ export default function Page({ params }: { params: { slug: string; username: str
               'font-sans': config.fontFamily === 'sans',
               'font-serif': config.fontFamily === 'serif',
             },
-            'prose-neutral text-justify max-w-none'
+            {
+              'text-justify': false
+            },
+            'prose-neutral max-w-none'
           )}
         >
           <h1>{title}</h1>

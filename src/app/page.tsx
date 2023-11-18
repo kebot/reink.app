@@ -61,7 +61,7 @@ type SearchSuccess = Extract<SearchResult, { __typename?: 'SearchSuccess' }>
 type SearchEdges = SearchSuccess['edges']
 
 const ArticleList: React.FC<{
-  edges: SearchEdges,
+  edges: SearchEdges
   username: string
 }> = ({ edges, username }) => {
   return (
@@ -70,35 +70,34 @@ const ArticleList: React.FC<{
         const { slug, title, description, savedAt, siteName, author, siteIcon, image } = edge.node
 
         return (
-          <Link key={slug} href={`/read/${username}/${slug}`}>
-          <div className='py-2 flex justify-between' key={slug}>
-            <div>
-              <h3 className='font-sans font-bold text-lg text-primary'>{title}</h3>
+          <Link className='block px-2 focus:bg-gray-100 hover:bg-gray-100' key={slug} href={`/read/${username}/${slug}`}>
+            <div className='py-2 flex justify-between' key={slug}>
+              <div>
+                <h3 className='font-sans font-bold text-lg text-primary'>{title}</h3>
 
-              <p className='font-serif text-primary'>{description}</p>
+                <p className='font-serif text-primary'>{description}</p>
 
-              <div className='font-mono text-sm font-thin text-primary'>
-                <span>{formatDistanceToNow(new Date(savedAt))}</span>
+                <div className='font-mono text-sm font-thin text-primary'>
+                  <span>{formatDistanceToNow(new Date(savedAt))}</span>
 
-                <span> | </span>
+                  <span> | </span>
 
-                {siteIcon && (
-                  <img
-                    src={siteIcon}
-                    className='w-4 h-4 inline-block grayscale'
-                    alt={siteName || ''}
-                  />
-                )}
+                  {siteIcon && (
+                    <img
+                      src={siteIcon}
+                      className='w-4 h-4 inline-block grayscale'
+                      alt={siteName || ''}
+                    />
+                  )}
 
-                <span> </span>
+                  <span> </span>
 
-                <span>{siteName}</span>
+                  <span>{siteName}</span>
 
-                {author && <span> | {author}</span>}
+                  {author && <span> | {author}</span>}
+                </div>
               </div>
             </div>
-          </div>
-
           </Link>
         )
       })}
@@ -122,7 +121,7 @@ const App = () => {
 
       {data?.search.__typename === 'SearchSuccess' && (
         <div>
-          <ArticleList username={data?.me?.profile?.username || ""} edges={data?.search.edges} />
+          <ArticleList username={data?.me?.profile?.username || ''} edges={data?.search.edges} />
 
           <div>Total: {data?.search.pageInfo.totalCount}</div>
         </div>
