@@ -1,26 +1,14 @@
-/* eslint-disable @next/next/no-img-element */
 'use client'
 
 import { graphql } from 'src/packages/omnivore/gql'
-import { SearchQuery } from 'src/packages/omnivore/gql/graphql'
 import { useQuery } from 'urql'
-import { formatDistanceToNow } from 'date-fns'
-import Link from 'next/link'
 import { useSearchParams, useRouter } from 'next/navigation'
 import clsx from 'clsx'
+import { Loading } from 'src/components/Loading'
+import { ArticleSearchList } from './ArticleSearchList'
 
-// endpoints,
-const searchQuery = graphql(/* GraphQL */ `
-  query Search($after: String, $first: Int, $query: String) {
-    me {
-      id
-      name
-      profile {
-        id
-        username
-      }
-    }
-
+const FiltersQuery = graphql(/* GraphQL */ `
+  query Filters {
     filters {
       ... on FiltersSuccess {
         filters {
@@ -36,171 +24,84 @@ const searchQuery = graphql(/* GraphQL */ `
         errorCodes
       }
     }
+  }
+`)
 
-    search(after: $after, first: $first, query: $query) {
-      ... on SearchSuccess {
-        pageInfo {
-          hasNextPage
-          hasPreviousPage
-          startCursor
-          endCursor
-          totalCount
-        }
-        edges {
-          cursor
-          node {
-            title
-            slug
-            description
-            url
-            savedAt
-            siteName
-            siteIcon
-            image
-            author
-
-            language
-            subscription
-            isArchived
-            labels {
-              name
-            }
-          }
-        }
+const PageQuery = graphql(/* GraphQL */ `
+  query Page {
+    me {
+      id
+      name
+      profile {
+        id
+        username
       }
     }
   }
 `)
 
-// quit fun TypeScript exercise
-// I'm sure there's better solution
-type SearchResult = SearchQuery['search']
-
-type SearchSuccess = Extract<SearchResult, { __typename?: 'SearchSuccess' }>
-type SearchEdges = SearchSuccess['edges']
-
-type FiltersSuccess = Extract<SearchQuery['filters'], { __typename?: 'FiltersSuccess' }>
-
-const Filters: React.FC<{
-  filters: FiltersSuccess['filters']
-}> = ({ filters }) => {
+const Filters: React.FC = () => {
   const searchParams = useSearchParams()
-  const queryFilter = searchParams?.get('query') || filters[0].filter
+  const queryFilter = searchParams?.get('query') || 'in:inbox'
   const router = useRouter()
 
-  return (
-    <div className='block space-x-2 space-y-2 p-2'>
-      {filters.map((filter) => {
-        if (!filter.visible) {
-          return null
-        }
+  const [{ data, fetching }] = useQuery({
+    query: FiltersQuery,
+    variables: {},
+    requestPolicy: 'cache-first',
+  })
 
-        return (
-          <span
-            className={clsx('badge badge-lg', {
-              'badge-accent': filter.filter === queryFilter,
-              'text-white': filter.filter === queryFilter,
-            })}
-            key={filter.id}
-            onClick={
-              () => {
-                router.push(`/?query=${filter.filter}`)
-              }
-            }
+  if (fetching) {
+    return <Loading />
+  }
 
-          >
-            {filter.name}
-          </span>
-        )
-      })}
-    </div>
-  )
-}
-
-const ArticleList: React.FC<{
-  edges: SearchEdges
-  username: string
-}> = ({ edges, username }) => {
-  return (
-    <div>
-      <div className='divide-y hover:cursor-pointer'>
-        {edges.map((edge) => {
-          const { slug, title, description, savedAt, siteName, author, siteIcon, image } = edge.node
+  if (data?.filters.__typename === 'FiltersSuccess') {
+    return (
+      <div className='block space-x-2 space-y-2 p-2 pb-4 sticky top-0 bg-gray-50 z-50'>
+        {data?.filters.filters.map((filter) => {
+          if (!filter.visible) {
+            return null
+          }
 
           return (
-            <Link
-              className='block px-2 focus:bg-gray-100 hover:bg-gray-100'
-              key={slug}
-              href={`/read/${username}/${slug}`}
+            <span
+              className={clsx(
+                'badge badge-lg cursor-pointer',
+                {
+                  'badge-accent': filter.filter === queryFilter,
+                  'text-white': filter.filter === queryFilter,
+                },
+                'hover:bg-slate-50'
+              )}
+              key={filter.id}
+              onClick={() => {
+                router.push(`/?query=${filter.filter}`)
+              }}
             >
-              <div className='py-2 flex justify-between' key={slug}>
-                <div>
-                  <h3 className='font-sans font-bold text-lg text-primary'>{title}</h3>
-
-                  <p className='font-serif text-primary'>{description}</p>
-
-                  <div className='font-mono text-sm font-thin text-primary'>
-                    <span>{formatDistanceToNow(new Date(savedAt))}</span>
-
-                    <span> | </span>
-
-                    {siteIcon && (
-                      <img
-                        src={siteIcon}
-                        className='w-4 h-4 inline-block grayscale'
-                        alt={siteName || ''}
-                      />
-                    )}
-
-                    <span> </span>
-
-                    <span>{siteName}</span>
-
-                    {author && <span> | {author}</span>}
-                  </div>
-                </div>
-              </div>
-            </Link>
+              {filter.name}
+            </span>
           )
         })}
       </div>
-    </div>
-  )
+    )
+  }
+
+  return null
 }
 
 const App = () => {
-  const searchParams = useSearchParams()
-  const queryFilter = searchParams?.get('query') || 'in:inbox'
-
   const [{ data, fetching }] = useQuery({
-    query: searchQuery,
-    variables: {
-      first: 10,
-      after: '0',
-      query: queryFilter,
-    },
+    query: PageQuery,
+    variables: {},
   })
 
   return (
     <div className='container mx-auto'>
       <h1 className='normal-case text-4xl text-center py-4 font-black'>ᚱᛖᛁᚾᚲ</h1>
 
-      {fetching && (
-        <div className='flex items-center justify-center'>
-          <span className='loading loading-bars loading-lg'></span>
-        </div>
-      )}
+      <Filters />
 
-      {data?.search.__typename === 'SearchSuccess' &&
-        data?.filters.__typename === 'FiltersSuccess' && (
-          <div>
-            <Filters filters={data?.filters.filters} />
-
-            <ArticleList username={data?.me?.profile?.username || ''} edges={data?.search.edges} />
-
-            <div>Total: {data?.search.pageInfo.totalCount}</div>
-          </div>
-        )}
+      {data?.me && <ArticleSearchList username={data?.me?.profile?.username || ''} />}
     </div>
   )
 }
