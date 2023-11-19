@@ -59,6 +59,7 @@ const ArticleList: React.FC<{
       first,
       query,
     },
+    requestPolicy: 'cache-and-network'
   })
 
   if (fetching) {

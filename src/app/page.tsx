@@ -65,14 +65,11 @@ const Filters: React.FC = () => {
 
           return (
             <span
-              className={clsx(
-                'badge badge-lg cursor-pointer',
-                {
-                  'badge-accent': filter.filter === queryFilter,
-                  'text-white': filter.filter === queryFilter,
-                },
-                'hover:bg-slate-50'
-              )}
+              className={clsx('badge badge-lg cursor-pointer', {
+                'badge-accent': filter.filter === queryFilter,
+                'text-white': filter.filter === queryFilter,
+                'hover:bg-slate-50': filter.filter !== queryFilter,
+              })}
               key={filter.id}
               onClick={() => {
                 router.push(`/?query=${filter.filter}`)
