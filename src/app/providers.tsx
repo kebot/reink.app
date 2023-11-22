@@ -2,24 +2,29 @@
 
 import React from 'react'
 import { Provider, Client, cacheExchange, fetchExchange } from 'urql'
+import { getCookie, setCookie } from 'cookies-next'
+import { COOKIE_NAME_OMNIVORE_API_KEY } from './auth/const'
 
-const OMNIVORE_API_KEY = '8fade3b3-b50e-48fd-b3f2-0c78eef7c2e0'
-// const OMNIVORE_HOST = 'https://api-prod.omnivore.app/api/graphql'
-
-function createClient(token: string) {
+function createClient() {
   return new Client({
     url: '/omnivore-proxy',
     exchanges: [cacheExchange, fetchExchange],
     fetchOptions: () => {
+      const token = getCookie(COOKIE_NAME_OMNIVORE_API_KEY)
+
+      if (!token) {
+        location.href = '/auth'
+        return {}
+      }
+
       return {
-        headers: { authorization: token },
+        headers: { authorization: token ? token : '' },
       }
     },
   })
 }
 
 export function Providers({ children }: { children: React.ReactElement }) {
-  const client = createClient(OMNIVORE_API_KEY)
-
+  const client = createClient()
   return <Provider value={client}>{children}</Provider>
 }

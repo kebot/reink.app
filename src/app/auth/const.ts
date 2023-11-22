@@ -1,0 +1,1 @@
+export const COOKIE_NAME_OMNIVORE_API_KEY = 'omnivore_api_key_v1'

@@ -1,6 +1,5 @@
 // target graphql endpoint
 const OMNIVORE_HOST = "https://api-prod.omnivore.app/api/graphql";
-const OMNIVORE_API_KEY = "8fade3b3-b50e-48fd-b3f2-0c78eef7c2e0";
 
 export async function POST(request: Request) {
   const requestText = await request.text()
@@ -9,7 +8,7 @@ export async function POST(request: Request) {
     method: 'POST',
     body: requestText,
     headers: {
-      authorization: OMNIVORE_API_KEY,
+      authorization: request.headers.get('authorization') || "",
       'Content-Type': 'application/json'
     },
   })
