@@ -6,9 +6,10 @@ import {
   EllipsisHorizontalIcon,
   TagIcon,
 } from '@heroicons/react/24/outline'
-import { FontChooser } from 'src/packages/FontChooser'
 import { useMutation } from 'urql'
 import { useRouter } from 'next/navigation'
+import { FontChooser } from 'src/packages/FontChooser'
+import { LabelEditor } from './LabelEditor'
 
 import { graphql } from 'src/packages/omnivore/gql'
 
@@ -27,8 +28,17 @@ const SetLinkArchived = graphql(/* GraphQL */ `
   }
 `)
 
-export const PageNav = ({ linkId }: { linkId: string }) => {
-  type Panel = 'font' | 'more' | undefined
+export const PageNav = ({
+  linkId,
+  username,
+  slug,
+}: {
+  linkId: string
+  username: string
+  slug: string
+}) => {
+  type Panel = 'font' | 'label' | 'more' | undefined
+
   const [panel, setPanel] = useState<Panel>(undefined)
   const [archiveResult, executeMutation] = useMutation(SetLinkArchived)
   const router = useRouter()
@@ -53,13 +63,25 @@ export const PageNav = ({ linkId }: { linkId: string }) => {
   return (
     <>
       {panel === 'font' && <FontChooser />}
+      {panel === 'label' && (
+        <LabelEditor handleClose={() => setPanel(undefined)} username={username} slug={slug} />
+      )}
 
       <div className='btm-nav border'>
         <Link title='home' href='/'>
           <ChevronLeftIcon className='h-6 w-6' />
         </Link>
 
-        <button title='edit-label'>
+        <button
+          title='edit-label'
+          onClick={() => {
+            if (panel === 'label') {
+              setPanel(undefined)
+            } else {
+              setPanel('label')
+            }
+          }}
+        >
           <TagIcon className='h-6 w-6'></TagIcon>
         </button>
 

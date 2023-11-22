@@ -77,7 +77,11 @@ export default function Page({ params }: { params: { slug: string; username: str
     const { title, content, url, siteName, savedAt, author, id } = data?.article.article
 
     return (
-      <Pager menu={<PageNav linkId={id} />}>
+      <Pager menu={<PageNav 
+        linkId={id} 
+        slug={params.slug}
+        username={params.username}
+      />}>
         <article
           className={clsx(
             'prose',
