@@ -13,7 +13,9 @@ function createClient() {
       const token = getCookie(COOKIE_NAME_OMNIVORE_API_KEY)
 
       if (!token) {
-        location.href = '/auth'
+        if (typeof location !== 'undefined') {
+          location.href = '/auth'
+        } 
         return {}
       }
 
