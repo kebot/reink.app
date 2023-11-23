@@ -6,6 +6,9 @@ import { useSearchParams, useRouter } from 'next/navigation'
 import clsx from 'clsx'
 import { Loading } from 'src/components/Loading'
 import { ArticleSearchList } from './ArticleSearchList'
+import { ArrowLeftOnRectangleIcon, ArrowPathIcon } from '@heroicons/react/24/outline'
+import { deleteCookie } from 'cookies-next'
+import { COOKIE_NAME_OMNIVORE_API_KEY } from './auth/const'
 
 const FiltersQuery = graphql(/* GraphQL */ `
   query Filters {
@@ -87,10 +90,15 @@ const Filters: React.FC = () => {
 }
 
 const App = () => {
-  const [{ data, fetching }] = useQuery({
+  const [{ data, fetching, error }] = useQuery({
     query: PageQuery,
     variables: {},
   })
+
+  const handleLogout = () => {
+    deleteCookie(COOKIE_NAME_OMNIVORE_API_KEY)
+    location.reload()
+  }
 
   return (
     <div className='container mx-auto'>
@@ -99,6 +107,21 @@ const App = () => {
       <Filters />
 
       {data?.me && <ArticleSearchList username={data?.me?.profile?.username || ''} />}
+
+      {error && (
+        <div className='text-center space-y-4'>
+          <div className='text-error'>{error?.message || 'Something wrong happen'}</div>
+          <div className='space-x-4'>
+            <button className='btn btn-ghost' onClick={() => location.reload()}>
+              <ArrowPathIcon className='h-4 w-4' /> Reload
+            </button>
+            <button className='btn btn-ghost' onClick={handleLogout}>
+              <ArrowLeftOnRectangleIcon className='h-4 w-4' />
+              Logout
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
