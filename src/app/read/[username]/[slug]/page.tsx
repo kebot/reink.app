@@ -77,14 +77,15 @@ export default function Page({ params }: { params: { slug: string; username: str
     const { title, content, url, siteName, savedAt, author, id } = data?.article.article
 
     return (
-      <Pager menu={<PageNav 
-        linkId={id} 
-        slug={params.slug}
-        username={params.username}
-      />}>
+      <Pager menu={<PageNav linkId={id} slug={params.slug} username={params.username} />}>
         <article
           className={clsx(
-            'prose',
+            'prose prose-gray max-w-none',
+
+            // 
+            'antialiased',
+
+            // font size
             {
               'prose-sm': config.fontSize === 0,
               'prose-base': config.fontSize === 1,
@@ -92,16 +93,19 @@ export default function Page({ params }: { params: { slug: string; username: str
               'prose-xl': config.fontSize === 3,
               'prose-2xl': config.fontSize === 4,
             },
-            // e-ink style for code and pre block
+
+            // e-ink style for `code` and `pre` block
             'prose-pre:bg-gray-200 prose-pre:text-black prose-code:font-mono',
+
+            // font family
+            config.fontFamily,
+
+            // line height
+            config.leading,
+
             {
-              'font-sans': config.fontFamily === 'sans',
-              'font-serif': config.fontFamily === 'serif',
+              'text-justify': config.justify,
             },
-            {
-              'text-justify': false,
-            },
-            'prose-neutral max-w-none',
           )}
         >
           <h1 className='font-sans'>{title}</h1>
@@ -111,21 +115,19 @@ export default function Page({ params }: { params: { slug: string; username: str
               {siteName}
             </a>
           </p>
+
           {parse(
             sanitizeHtml(content, {
               allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
               allowedAttributes: {
                 ...sanitizeHtml.defaults.allowedAttributes,
-                '*': ['data-omnivore-anchor-idx']
-              }
+                '*': ['data-omnivore-anchor-idx'],
+              },
             }),
             {
               replace: replaceTag,
             }
           )}
-
-          <p>debug: END</p>
-
         </article>
       </Pager>
     )

@@ -2,12 +2,16 @@ import { useLocalStorageValue } from '@react-hookz/web'
 
 type AppConfig = {
   fontSize: number
-  fontFamily: 'serif' | 'sans'
+  fontFamily: string
+  justify: boolean
+  leading: string
 }
 
 const defaultValue: AppConfig = {
   fontSize: 2,
   fontFamily: 'serif',
+  justify: false,
+  leading: 'leading-normal'
 }
 
 /**
