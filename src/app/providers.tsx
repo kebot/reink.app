@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { Provider, Client, cacheExchange, fetchExchange } from 'urql'
-import { getCookie, setCookie } from 'cookies-next'
+import { getCookie } from 'cookies-next'
 import { COOKIE_NAME_OMNIVORE_API_KEY } from './auth/const'
 
 function createClient() {

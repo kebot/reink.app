@@ -27,7 +27,11 @@ const Connect = () => {
   }, [router])
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    setCookie(COOKIE_NAME_OMNIVORE_API_KEY, data.apiKey)
+    setCookie(COOKIE_NAME_OMNIVORE_API_KEY, data.apiKey, {
+      // default is 1 year
+      maxAge: 365 * 24 * 60 * 60 // seconds
+    })
+
     router.push('/')
   }
 
