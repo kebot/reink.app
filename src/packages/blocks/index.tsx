@@ -1,21 +1,22 @@
 import sanitizeHtml from 'sanitize-html'
-import parse, { domToReact, attributesToProps, DOMNode, Element, Node } from 'html-react-parser'
+import parse, { domToReact, attributesToProps, DOMNode, Element } from 'html-react-parser'
 import { Link } from './Link'
+import { Code } from './Code'
+import React from 'react'
 
-function Paragraph({ node }: { node: Element }) {
-  const props = attributesToProps(node.attribs)
-
+function Paragraph({ children, ...props }: React.ComponentProps<'p'>) {
   return (
-    <p
-      // className='hover:underline hover:decoration-dotted'
-      {...props}
-    >
-      {domToReact(node.children, {
-        replace: replaceTag,
-      })}
+    <p {...props}>
+      {children}
     </p>
   )
 }
+
+const tagMap = new Map<string, React.FC<React.ComponentProps<any>>>()
+
+tagMap.set('p', Paragraph)
+tagMap.set('code', Code)
+tagMap.set('a', Link)
 
 /**
  * the replace callback will replace an element with another element
@@ -23,27 +24,29 @@ function Paragraph({ node }: { node: Element }) {
  */
 const replaceTag = (node: DOMNode) => {
   if (node.type === 'tag') {
-    if ((node as Element).name === 'a') {
-      // external link may not work well on e-ink devices
-      return <Link node={node as Element} />
-    }
+    const el = node as Element
 
-    if ((node as Element).name === 'p') {
-      // external link may not work well on e-ink devices
-      return <Paragraph node={node as Element} />
+    const targetComponent = tagMap.get(el.name)
+    if (targetComponent) {
+      const props = attributesToProps(el.attribs)
+      const children = domToReact(el.children, { replace: replaceTag })
+
+      return React.createElement(targetComponent, props as any, children)
     }
   }
 }
 
 export const parseHTML = (html: string) => {
+
   return parse(
-    sanitizeHtml(html, {
-      allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
-      allowedAttributes: {
-        ...sanitizeHtml.defaults.allowedAttributes,
-        '*': ['data-omnivore-anchor-idx'],
-      },
-    }),
+    html,
+    // sanitizeHtml(html, {
+    //   allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
+    //   allowedAttributes: {
+    //     ...sanitizeHtml.defaults.allowedAttributes,
+    //     '*': ['data-omnivore-anchor-idx'],
+    //   },
+    // }),
     {
       replace: replaceTag,
     }

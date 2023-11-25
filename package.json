@@ -37,6 +37,7 @@
     "date-fns": "^2.30.0",
     "debug": "^4.3.4",
     "graphql": "^16.8.1",
+    "highlight.js": "^11.9.0",
     "html-react-parser": "^3.0.1",
     "instapaper-node-sdk": "^2.0.1",
     "jsdom": "^20.0.0",

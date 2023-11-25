@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { domToReact, attributesToProps, Element } from 'html-react-parser'
 import {
   useFloating,
   autoUpdate,
@@ -13,11 +12,10 @@ import {
   useId,
   useFocus,
 } from '@floating-ui/react'
-
+import React, { HTMLAttributes } from 'react'
 import { ArrowTopRightOnSquareIcon, BookmarkIcon } from '@heroicons/react/24/outline'
 
-export const Link: React.FC<{ node: Element }> = ({ node }) => {
-  const props = attributesToProps(node.attribs)
+export function Link({ children, ...props }: React.ComponentProps<'a'>) {
   const [isOpen, setIsOpen] = useState(false)
 
   const { refs, floatingStyles, context } = useFloating({
@@ -52,13 +50,13 @@ export const Link: React.FC<{ node: Element }> = ({ node }) => {
           },
         })}
       >
-        {domToReact(node.children)}
+        {children}
       </a>
 
       {isOpen && (
         <FloatingFocusManager context={context} modal={false}>
           <div
-            className='space-x-2 rounded-box bg-white border shadow-xs'
+            className='space-x-2 bg-white shadow-xs border border-current p-2'
             ref={refs.setFloating}
             style={floatingStyles}
             aria-labelledby={headingId}
@@ -80,7 +78,7 @@ export const Link: React.FC<{ node: Element }> = ({ node }) => {
               </button>
             </div>
 
-            <div className="whitespace-nowrap max-w-xs truncate text-gray-400 text-xs pb-1">{props.href}</div>
+            <div className="whitespace-nowrap max-w-xs truncate text-gray-500 text-xs pb-1 pl-[4px]">{props.href}</div>
           </div>
         </FloatingFocusManager>
       )}
