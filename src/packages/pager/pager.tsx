@@ -14,7 +14,13 @@ function getFrameWidth(el: HTMLElement) {
   return el.getBoundingClientRect().width - PAGE_PADDING * 2 + PAGE_GAP
 }
 
-export const Pager = ({ children, menu }: { children: React.ReactNode; menu: React.ReactNode }) => {
+/**
+ * the pager component takes any Content and then split it into pages
+ */
+export const Pager = ({ 
+  children,
+  menu
+}: { children: React.ReactNode; menu: React.ReactNode }) => {
   log('start-render')
 
   // page container ref
@@ -79,6 +85,12 @@ export const Pager = ({ children, menu }: { children: React.ReactNode; menu: Rea
   const handlers = useSwipeable({
     onSwipedLeft: nextPage,
     onSwipedRight: prevPage,
+    // onTouchStartOrOnMouseDown: (e) => {
+    //   console.log(e)
+    // },
+    // onTouchEndOrOnMouseUp: (e) => {
+    //   console.log(e)
+    // }
   })
 
   const handleTap: PointerEventHandler = (e) => {

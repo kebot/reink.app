@@ -2,13 +2,12 @@
 
 import { graphql } from 'src/packages/omnivore/gql'
 import { useQuery } from 'urql'
-import parse, { domToReact, attributesToProps } from 'html-react-parser'
 import { Pager } from 'src/packages/pager'
 import clsx from 'clsx'
 import { useGlobalConfig } from 'src/packages/useSettings'
 import { PageNav } from './PageNav'
 import { formatDistanceToNow } from 'date-fns'
-import sanitizeHtml from 'sanitize-html'
+import { parseHTML } from 'src/packages/blocks'
 
 const ArticleQuery = graphql(/* GraphQL */ `
   query Article($username: String!, $slug: String!, $format: String!) {
@@ -48,17 +47,6 @@ const SaveArticleReadingProgress = graphql(/* GraphQL */ `
   }
 `)
 
-/**
- * the replace callback will replace an element with another element
- *     https://www.npmjs.com/package/html-react-parser#replace
- */
-const replaceTag = (domNode: any) => {
-  if (domNode.type === 'tag' && domNode?.name === 'a') {
-    // external link may not work well on e-ink devices
-    return <span className='underline'>{domToReact(domNode.children)}</span>
-  }
-}
-
 export default function Page({ params }: { params: { slug: string; username: string } }) {
   const [{ data, fetching }] = useQuery({
     query: ArticleQuery,
@@ -96,6 +84,7 @@ export default function Page({ params }: { params: { slug: string; username: str
 
             // e-ink style for `code` and `pre` block
             'prose-pre:bg-gray-200 prose-pre:text-black prose-code:font-mono',
+            'underline-offset-2 decoration-from-font',
 
             // font family
             config.fontFamily,
@@ -106,6 +95,8 @@ export default function Page({ params }: { params: { slug: string; username: str
             {
               'text-justify': config.justify,
             },
+            // enable user select
+            'select-text'
           )}
         >
           <h1 className='font-sans'>{title}</h1>
@@ -116,18 +107,7 @@ export default function Page({ params }: { params: { slug: string; username: str
             </a>
           </p>
 
-          {parse(
-            sanitizeHtml(content, {
-              allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
-              allowedAttributes: {
-                ...sanitizeHtml.defaults.allowedAttributes,
-                '*': ['data-omnivore-anchor-idx'],
-              },
-            }),
-            {
-              replace: replaceTag,
-            }
-          )}
+          {parseHTML(content)}
         </article>
       </Pager>
     )
