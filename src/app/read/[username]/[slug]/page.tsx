@@ -7,7 +7,7 @@ import clsx from 'clsx'
 import { useGlobalConfig } from 'src/packages/useSettings'
 import { PageNav } from './PageNav'
 import { formatDistanceToNow } from 'date-fns'
-import { parseHTML } from 'src/packages/blocks'
+import HTMLBlocks from 'src/packages/blocks'
 
 const ArticleQuery = graphql(/* GraphQL */ `
   query Article($username: String!, $slug: String!, $format: String!) {
@@ -107,7 +107,7 @@ export default function Page({ params }: { params: { slug: string; username: str
             </a>
           </p>
 
-          {parseHTML(content)}
+          <HTMLBlocks html={content} />
         </article>
       </Pager>
     )
