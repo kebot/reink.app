@@ -31,30 +31,58 @@ tagMap.set('a', Link)
 
 // site effect, while sanitize the html, it might be able to generate a table of content
 
-/**
- * the replace callback will replace an element with another element
- *     https://www.npmjs.com/package/html-react-parser#replace
- */
-const replaceTag = (node: DOMNode) => {
-  if (node.type === 'tag') {
-    const el = node as Element
-
-    const targetComponent = tagMap.get(el.name)
-    if (targetComponent) {
-      const props = attributesToProps(el.attribs)
-      const children = domToReact(el.children, { replace: replaceTag })
-
-      return React.createElement(targetComponent, props as any, children)
-    }
-  }
+export type TOC = {
+  id: string
+  level: number
+  name: string
 }
 
-export default function HTMLBlocks({ html }: { html: string }) {
-  const page = useMemo(() => {
-    return parse(html, {
+export function useParseHTML(html: string | undefined): [ReturnType<typeof parse> | null, TOC[]] {
+  return useMemo(() => {
+    const tableOfContents: TOC[] = []
+
+    if (!html) {
+      return [null, tableOfContents]
+    }
+
+    /**
+     * the replace callback will replace an element with another element
+     *     https://www.npmjs.com/package/html-react-parser#replace
+     */
+    const replaceTag = (node: DOMNode) => {
+      if (node.type === 'tag') {
+        const el = node as Element
+
+        // generate table of content
+        if (el.name.startsWith('h') && el.name.length === 2) {
+          tableOfContents.push({
+            id: el.attribs['data-omnivore-anchor-idx'],
+            level: parseInt(el.name.replace('h', ''), 10),
+            name: el.children
+              .map((child) => {
+                if (child.nodeType === 3) {
+                  return child.data
+                }
+              })
+              .join(''),
+          })
+        }
+
+        const targetComponent = tagMap.get(el.name)
+
+        if (targetComponent) {
+          const props = attributesToProps(el.attribs)
+          const children = domToReact(el.children, { replace: replaceTag })
+
+          return React.createElement(targetComponent, props as any, children)
+        }
+      }
+    }
+
+    const node = parse(html, {
       replace: replaceTag,
     })
-  }, [html])
 
-  return page
+    return [node, tableOfContents]
+  }, [html])
 }

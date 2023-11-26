@@ -7,7 +7,8 @@ import clsx from 'clsx'
 import { useGlobalConfig } from 'src/packages/useSettings'
 import { PageNav } from './PageNav'
 import { formatDistanceToNow } from 'date-fns'
-import HTMLBlocks from 'src/packages/blocks'
+import { useParseHTML } from 'src/packages/blocks'
+import { TableOfContent } from 'src/packages/blocks/TOC'
 
 const ArticleQuery = graphql(/* GraphQL */ `
   query Article($username: String!, $slug: String!, $format: String!) {
@@ -59,18 +60,34 @@ export default function Page({ params }: { params: { slug: string; username: str
     },
   })
 
+  const [contentElement, toc] = useParseHTML(
+    data?.article.__typename === 'ArticleSuccess' ? data.article.article.content : undefined
+  )
+
   const [config] = useGlobalConfig()
 
   if (data?.article.__typename === 'ArticleSuccess') {
-    const { title, content, url, siteName, savedAt, author, id } = data?.article.article
+    const { title, url, siteName, savedAt, author, id } = data?.article.article
 
     return (
       <Pager menu={<PageNav linkId={id} slug={params.slug} username={params.username} />}>
+        <div className='prose'>
+          <h1 className='font-sans'>{title}</h1>
+          <p>
+            {formatDistanceToNow(new Date(savedAt))} ago • {author && `${author} • `}
+            <a href={url} target='_blank'>
+              {siteName}
+            </a>
+          </p>
+        </div>
+
+        <TableOfContent data={toc} />
+
         <article
           className={clsx(
             'prose prose-gray max-w-none',
 
-            // 
+            //
             'antialiased',
 
             // font size
@@ -99,15 +116,7 @@ export default function Page({ params }: { params: { slug: string; username: str
             'select-text'
           )}
         >
-          <h1 className='font-sans'>{title}</h1>
-          <p>
-            {formatDistanceToNow(new Date(savedAt))} ago • {author && `${author} • `}
-            <a href={url} target='_blank'>
-              {siteName}
-            </a>
-          </p>
-
-          <HTMLBlocks html={content} />
+          {contentElement}
         </article>
       </Pager>
     )
