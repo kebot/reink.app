@@ -18,6 +18,7 @@ import parse, { domToReact, attributesToProps, DOMNode, Element } from 'html-rea
 import { Link } from './Link'
 import { Code } from './Code'
 import React, { useEffect, useMemo } from 'react'
+import { Image } from './Image'
 
 function Paragraph({ children, ...props }: React.ComponentProps<'p'>) {
   return <p {...props}>{children}</p>
@@ -28,6 +29,7 @@ const tagMap = new Map<string, React.FC<React.ComponentProps<any>>>()
 tagMap.set('p', Paragraph)
 tagMap.set('code', Code)
 tagMap.set('a', Link)
+tagMap.set('img', Image)
 
 // site effect, while sanitize the html, it might be able to generate a table of content
 

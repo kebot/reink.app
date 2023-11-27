@@ -1,14 +1,15 @@
 'use client'
 
 import { graphql } from 'src/packages/omnivore/gql'
-import { useQuery } from 'urql'
+import { useMutation, useQuery } from 'urql'
 import { Pager } from 'src/packages/pager'
 import clsx from 'clsx'
 import { useGlobalConfig } from 'src/packages/useSettings'
 import { PageNav } from './PageNav'
 import { formatDistanceToNow } from 'date-fns'
 import { useParseHTML } from 'src/packages/blocks'
-import { TableOfContent } from 'src/packages/blocks/TOC'
+// import { TableOfContent } from 'src/packages/blocks/TOC'
+import { useCallback } from 'react'
 
 const ArticleQuery = graphql(/* GraphQL */ `
   query Article($username: String!, $slug: String!, $format: String!) {
@@ -58,7 +59,10 @@ export default function Page({ params }: { params: { slug: string; username: str
       // markdown, html, distiller, highlightedMarkdown
       format: 'html',
     },
+    requestPolicy: 'cache-first',
   })
+
+  const [handle, executeMutation] = useMutation(SaveArticleReadingProgress)
 
   const [contentElement, toc] = useParseHTML(
     data?.article.__typename === 'ArticleSuccess' ? data.article.article.content : undefined
@@ -66,11 +70,30 @@ export default function Page({ params }: { params: { slug: string; username: str
 
   const [config] = useGlobalConfig()
 
+  const handlePageChange = useCallback(
+    (page: number, totalPage: number) => {
+      return 
+      // if (data?.article.__typename === 'ArticleSuccess') {
+      //   const id = data.article.article.id
+      //   executeMutation({
+      //     input: {
+      //       id: id,
+      //       readingProgressPercent: Math.round((page + 1) / totalPage),
+      //     },
+      //   })
+      // }
+    },
+    [data, executeMutation]
+  )
+
   if (data?.article.__typename === 'ArticleSuccess') {
     const { title, url, siteName, savedAt, author, id } = data?.article.article
 
     return (
-      <Pager menu={<PageNav linkId={id} slug={params.slug} username={params.username} />}>
+      <Pager
+        menu={<PageNav linkId={id} slug={params.slug} username={params.username} />}
+        onPageChange={handlePageChange}
+      >
         <div className='prose'>
           <h1 className='font-sans'>{title}</h1>
           <p>
@@ -80,8 +103,6 @@ export default function Page({ params }: { params: { slug: string; username: str
             </a>
           </p>
         </div>
-
-        <TableOfContent data={toc} />
 
         <article
           className={clsx(

@@ -17,14 +17,20 @@ function getFrameWidth(el: HTMLElement) {
 /**
  * the pager component takes any Content and then split it into pages
  */
-export const Pager = ({ 
+export const Pager = ({
   children,
-  menu
-}: { children: React.ReactNode; menu: React.ReactNode }) => {
+  menu,
+  onPageChange,
+}: {
+  children: React.ReactNode
+  menu: React.ReactNode
+  onPageChange: (c: number, t: number) => void
+}) => {
   log('start-render')
 
   // page container ref
   const frameRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
 
   const [[currentPage, totalPage], setPage] = useState<[number, number]>([0, 1])
   const [menuVisible, setMenuVisible] = useState(true)
@@ -32,21 +38,26 @@ export const Pager = ({
 
   // recalculate total page and current page
   useEffect(() => {
-    if (!frameRef.current) {
+    if (!frameRef.current || !contentRef.current) {
       return
     }
 
     const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        if (entry.target === frameRef.current) {
-          const node = frameRef.current
-          const totalPage = Math.round((node.scrollWidth - node.offsetWidth) / node.offsetWidth + 1)
-          setPage([0, totalPage])
-        }
+      if (!frameRef.current || !contentRef.current) {
+        return
       }
+      const node = frameRef.current
+      const totalPage = Math.round((node.scrollWidth - node.offsetWidth) / node.offsetWidth + 1)
+
+      console.log('total-page', totalPage)
+
+      setPage(([c, t]) => {
+        return [Math.round((c / t) * totalPage), totalPage]
+      })
     })
 
     resizeObserver.observe(frameRef.current)
+    resizeObserver.observe(contentRef.current)
 
     return () => resizeObserver.disconnect()
   }, [frameRef, setPage])
@@ -75,7 +86,9 @@ export const Pager = ({
     debug('goingTo')(currentPage)
 
     frameRef.current.scrollTo(getFrameWidth(frameRef.current) * currentPage, 0)
-  }, [currentPage])
+
+    onPageChange(currentPage, totalPage)
+  }, [currentPage, totalPage, onPageChange])
 
   // Keyboard Shortcuts
   useKey('ArrowRight', nextPage, { event: 'keyup' }, [nextPage])
@@ -126,7 +139,7 @@ export const Pager = ({
         ref={frameRef}
         onPointerUp={handleTap}
       >
-        {children}
+        <div ref={contentRef}>{children}</div>
 
         <div className='absolute bottom-1 right-4 font-mono text-xs text-gray-400'>
           {Math.round(((currentPage + 1) / totalPage) * 100)}%
