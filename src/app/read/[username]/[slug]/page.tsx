@@ -10,6 +10,9 @@ import { formatDistanceToNow } from 'date-fns'
 import { useParseHTML } from 'src/packages/blocks'
 // import { TableOfContent } from 'src/packages/blocks/TOC'
 import { useCallback, useEffect, useMemo } from 'react'
+import debug from 'debug'
+
+const log = debug('route/read')
 
 const ArticleQuery = graphql(/* GraphQL */ `
   query Article($username: String!, $slug: String!, $format: String!) {
@@ -55,7 +58,9 @@ const useSaveArticleReadingProgress = (id: string | null) => {
   const handlePageChange = useCallback(
     (page: number, totalPage: number) => {
       if (id) {
-        console.log(page, totalPage)
+        log("handlePageChange", {
+          page, totalPage
+        })
 
         executeMutation({
           input: {

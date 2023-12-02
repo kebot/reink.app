@@ -3,7 +3,7 @@ import debug from 'debug'
 import { useKey } from 'react-use'
 import { useSwipeable } from 'react-swipeable'
 
-const log = debug('Pager')
+const log = debug('pager')
 
 // TODO detect padding/gap by script
 
@@ -23,8 +23,6 @@ type PagerProps = {
   initialReadingProgressPercent?: number
 
   columnsPerPage?: number
-
-  // padding can be set by CSS?
 }
 
 /**
@@ -35,9 +33,9 @@ export const Pager: React.FC<PagerProps> = ({
   menu,
   onPageChange,
   initialReadingProgressPercent,
-  columnsPerPage,
+  columnsPerPage = 1,
 }) => {
-  log('start-render')
+  // log('start-render')
   const pageGap = 32
   const pagePadding = 32
 
@@ -51,7 +49,7 @@ export const Pager: React.FC<PagerProps> = ({
   ])
 
   const [menuVisible, setMenuVisible] = useState(true)
-  // recalculate total page and current page
+
   useEffect(() => {
     if (!frameRef.current || !contentRef.current) {
       return
@@ -63,12 +61,18 @@ export const Pager: React.FC<PagerProps> = ({
       }
 
       const node = frameRef.current
-      const totalPage = Math.round((node.scrollWidth - node.offsetWidth) / node.offsetWidth + 1)
+
+      const pageWidth = node.offsetWidth
+      const contentWidth = node.scrollWidth
+      const totalPage = Math.ceil(contentWidth / pageWidth)
 
       log('total-page', totalPage)
 
       setPage(([c, t]) => {
-        return [Math.round(((c + 1) / t) * totalPage), totalPage]
+        const originalPercentage = (c + 1) / t
+        log('position', originalPercentage + '%')
+        const newPage = Math.round(originalPercentage)
+        return [newPage, totalPage]
       })
     })
 
@@ -76,7 +80,7 @@ export const Pager: React.FC<PagerProps> = ({
     resizeObserver.observe(contentRef.current)
 
     return () => resizeObserver.disconnect()
-  }, [frameRef, setPage])
+  }, [frameRef, contentRef, setPage])
 
   const nextPage = useCallback(() => {
     if (currentPage >= totalPage - 1) {
@@ -149,14 +153,17 @@ export const Pager: React.FC<PagerProps> = ({
       <div
         className='overflow-hidden h-full'
         style={{
-          columns: `${frameRef?.current?.offsetWidth || 100}px 1`,
+          // columns: `${(frameRef?.current?.offsetWidth || 100) / 2 - pageGap}px 1`,
+          columns: columnsPerPage,
           columnGap: pageGap,
-          padding: `${pagePadding}px`
+          padding: `${pagePadding}px`,
         }}
         ref={frameRef}
         onPointerUp={handleTap}
       >
         <div ref={contentRef}>{children}</div>
+
+        {/* Placeholder block while */}
 
         <div className='absolute bottom-1 right-4 font-mono text-xs text-gray-400'>
           {Math.round(((currentPage + 1) / totalPage) * 100)}%
