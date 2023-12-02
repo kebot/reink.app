@@ -5,7 +5,7 @@ import { useGlobalConfig } from 'src/packages/useSettings'
 import { Noto_Serif_SC } from 'next/font/google'
 import { Noto_Sans_SC } from 'next/font/google'
 
-import { Bars3BottomLeftIcon, Bars3Icon } from '@heroicons/react/24/outline'
+import { Bars3BottomLeftIcon, Bars3Icon, Bars4Icon } from '@heroicons/react/24/outline'
 
 const serifSC = Noto_Serif_SC({
   display: 'swap',
@@ -32,7 +32,7 @@ const leadings = [
 
 const fonts = {
   // system default
-  Sans: 'font-fans',
+  Sans: 'font-sans',
   Serif: 'font-serif',
 
   // only available for Chinese font
@@ -40,91 +40,175 @@ const fonts = {
   思源宋: serifSC.className,
 }
 
-export const FontChooser = () => {
+const paddings = ['p-1', 'p-2', 'p-4', 'p-6', 'p-8']
+
+const PaddingSetting = () => {
   const [config, setConfig] = useGlobalConfig()
 
   return (
+    <div>
+      <span className='label-text'>padding</span>
+      {paddings.map((padding) => {
+        return (
+          <button
+            key={padding}
+            className={clsx('btn btn-ghost', {
+              'btn-outline': config.padding === padding,
+            })}
+            onClick={() => {
+              setConfig('padding', padding)
+            }}
+          >
+            {padding.replace('p-', '')}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+const ColumnsSetting = () => {
+  const [config, setConfig] = useGlobalConfig()
+  return (
+    <div className='form-control w-32'>
+      <label className='label cursor-pointer space-x-1'>
+        <span className='label-text'>
+          <Bars4Icon className='w-4 h-4' />
+        </span>
+        <input
+          type='checkbox'
+          className='toggle'
+          checked={config.columns === 2}
+          onChange={(v) => {
+            setConfig('columns', v.target.checked ? 2 : 1)
+          }}
+        />
+        <span className='label-text scale-x-50 -translate-x-2'>
+          <Bars4Icon className='w-4 h-4 inline-block' />
+          <Bars4Icon className='w-4 h-4 inline-block' />
+        </span>
+      </label>
+    </div>
+  )
+}
+
+const JustifySetting = () => {
+  const [config, setConfig] = useGlobalConfig()
+  return (
+    <div className='form-control w-32'>
+      <label className='label cursor-pointer space-x-1'>
+        <span className='label-text'>
+          <Bars3BottomLeftIcon className='w-4 h-4' />
+        </span>
+        <input
+          type='checkbox'
+          className='toggle'
+          checked={config.justify}
+          onChange={(v) => {
+            setConfig('justify', v.target.checked)
+          }}
+        />
+        <span className='label-text'>
+          <Bars3Icon className='w-4 h-4' />
+        </span>
+      </label>
+    </div>
+  )
+}
+
+const FontFamilySetting = () => {
+  const [config, setConfig] = useGlobalConfig()
+  return (
+    <div className='btn-group gap-4 space-x-1'>
+      {Object.entries(fonts).map(([name, font]) => (
+        <button
+          key={font}
+          className={clsx('btn btn-outline', {
+            'font-sans': config.fontFamily === 'sans',
+            'font-serif': config.fontFamily === 'serif',
+            'btn-active': config.fontFamily === font,
+          })}
+          onClick={() => setConfig('fontFamily', font as any)}
+        >
+          {name}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+const LineHeightSetting = () => {
+  const [config, setConfig] = useGlobalConfig()
+  return (
+    <div>
+      <span className='label-text'>line height </span>
+      {leadings.map((leading) => {
+        return (
+          <button
+            key={leading}
+            className={clsx('btn btn-ghost', {
+              'btn-outline': config.leading === leading,
+            })}
+            onClick={() => {
+              setConfig('leading', leading)
+            }}
+          >
+            {leading.replace('leading-', '')}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
+const FontSizeSetting = () => {
+  const [config, setConfig] = useGlobalConfig()
+
+  return (
+    <div>
+      <input
+        type='range'
+        min='0'
+        max='4'
+        value={config.fontSize}
+        className='range'
+        step='1'
+        onChange={(e) => {
+          if (e.target.value) setConfig('fontSize', Number(e.target.value))
+        }}
+      />
+      <div className='w-full flex justify-between px-2'>
+        {fontSizes.map((size, index) => {
+          return (
+            <span key={size} className={`${size}`}>
+              {size.replace('text-', '')}
+            </span>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+export const FontChooser = () => {
+  return (
     <div className='border bg-base-100 fixed left-0 right-0 bottom-16 p-2 space-y-2'>
       <div className='flex justify-between align-middle'>
-        <div className='btn-group gap-4 space-x-1'>
-          {Object.entries(fonts).map(([name, font]) => (
-            <button
-              key={font}
-              className={clsx('btn btn-outline', {
-                'font-sans': config.fontFamily === 'sans',
-                'font-serif': config.fontFamily === 'serif',
-                'btn-active': config.fontFamily === font,
-              })}
-              onClick={() => setConfig('fontFamily', font as any)}
-            >
-              {name}
-            </button>
-          ))}
-        </div>
+        <FontFamilySetting />
       </div>
 
       <div className='flex justify-between'>
-        <div>
-          {leadings.map((leading) => {
-            return (
-              <button
-                key={leading}
-                className={clsx('btn btn-ghost', {
-                  'btn-outline': config.leading === leading,
-                })}
-                onClick={() => {
-                  setConfig('leading', leading)
-                }}
-              >
-                {leading.replace('leading-', '')}
-              </button>
-            )
-          })}
-        </div>
-        <div>
-          <div className='form-control'>
-            <label className='label cursor-pointer space-x-1'>
-              <span className='label-text'>
-                <Bars3BottomLeftIcon className='w-4 h-4' />
-              </span>
-              <input
-                type='checkbox'
-                className='toggle'
-                checked={config.justify}
-                onChange={(v) => {
-                  setConfig('justify', v.target.checked)
-                }}
-              />
-              <span className='label-text'>
-                <Bars3Icon className='w-4 h-4' />
-              </span>
-            </label>
-          </div>
-        </div>
+        <LineHeightSetting />
+
+        <JustifySetting />
       </div>
 
-      <div>
-        <input
-          type='range'
-          min='0'
-          max='4'
-          value={config.fontSize}
-          className='range'
-          step='1'
-          onChange={(e) => {
-            if (e.target.value) setConfig('fontSize', Number(e.target.value))
-          }}
-        />
-        <div className='w-full flex justify-between px-2'>
-          {fontSizes.map((size, index) => {
-            return (
-              <span key={size} className={`${size}`}>
-                {size.replace('text-', '')}
-              </span>
-            )
-          })}
-        </div>
+      <div className='flex justify-between'>
+        <PaddingSetting />
+        <ColumnsSetting />
       </div>
+
+      <FontSizeSetting />
     </div>
   )
 }

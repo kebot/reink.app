@@ -3,15 +3,25 @@ import { useLocalStorageValue } from '@react-hookz/web'
 type AppConfig = {
   fontSize: number
   fontFamily: string
+
   justify: boolean
+
+  // line height
   leading: string
+
+  // padding
+  padding: string
+
+  columns: number
 }
 
 const defaultValue: AppConfig = {
   fontSize: 2,
   fontFamily: 'serif',
   justify: false,
-  leading: 'leading-normal'
+  leading: 'leading-normal',
+  padding: 'p-4',
+  columns: 1
 }
 
 /**

@@ -109,6 +109,8 @@ export default function Page({ params }: { params: { slug: string; username: str
         menu={<PageNav linkId={id} slug={params.slug} username={params.username} />}
         initialReadingProgressPercent={readingProgressPercent}
         onPageChange={handlePageChange}
+        padding={config.padding || 'p-2'}
+        columnsPerPage={config.columns || 1}
       >
         <div className='prose'>
           <h1 className='font-sans'>{title}</h1>

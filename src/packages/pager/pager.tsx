@@ -2,6 +2,7 @@ import { useRef, useState, useEffect, useCallback, PointerEventHandler } from 'r
 import debug from 'debug'
 import { useKey } from 'react-use'
 import { useSwipeable } from 'react-swipeable'
+import clsx from 'clsx'
 
 const log = debug('pager')
 
@@ -23,6 +24,8 @@ type PagerProps = {
   initialReadingProgressPercent?: number
 
   columnsPerPage?: number
+
+  padding?: string
 }
 
 /**
@@ -34,10 +37,10 @@ export const Pager: React.FC<PagerProps> = ({
   onPageChange,
   initialReadingProgressPercent,
   columnsPerPage = 1,
+  padding,
 }) => {
   // log('start-render')
   const pageGap = 32
-  const pagePadding = 32
 
   // page container ref
   const frameRef = useRef<HTMLDivElement>(null)
@@ -103,7 +106,10 @@ export const Pager: React.FC<PagerProps> = ({
       return
     }
 
-    debug('goingTo')(currentPage)
+    const styles = window.getComputedStyle(frameRef.current)
+    const pagePadding = parseInt(styles.padding)
+
+    log('goingTo', { currentPage, pagePadding })
 
     // Layout: padding - page1 - gap - page2 - gap .... - pageN - padding
     const frameWidth = frameRef.current.getBoundingClientRect().width - pagePadding * 2 + pageGap
@@ -151,19 +157,15 @@ export const Pager: React.FC<PagerProps> = ({
   return (
     <div className='h-screen w-screen' {...handlers}>
       <div
-        className='overflow-hidden h-full'
+        className={clsx('overflow-hidden h-full', padding)}
         style={{
-          // columns: `${(frameRef?.current?.offsetWidth || 100) / 2 - pageGap}px 1`,
           columns: columnsPerPage,
           columnGap: pageGap,
-          padding: `${pagePadding}px`,
         }}
         ref={frameRef}
         onPointerUp={handleTap}
       >
         <div ref={contentRef}>{children}</div>
-
-        {/* Placeholder block while */}
 
         <div className='absolute bottom-1 right-4 font-mono text-xs text-gray-400'>
           {Math.round(((currentPage + 1) / totalPage) * 100)}%
