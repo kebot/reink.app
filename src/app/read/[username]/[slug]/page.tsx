@@ -9,7 +9,7 @@ import { PageNav } from './PageNav'
 import { formatDistanceToNow } from 'date-fns'
 import { useParseHTML } from 'src/packages/blocks'
 // import { TableOfContent } from 'src/packages/blocks/TOC'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
 const ArticleQuery = graphql(/* GraphQL */ `
   query Article($username: String!, $slug: String!, $format: String!) {
@@ -25,13 +25,13 @@ const ArticleQuery = graphql(/* GraphQL */ `
           publishedAt
           savedAt
           author
+          readingProgressPercent
         }
       }
     }
   }
 `)
 
-// TODO use this action
 const SaveArticleReadingProgress = graphql(/* GraphQL */ `
   mutation SaveArticleReadingProgress($input: SaveArticleReadingProgressInput!) {
     saveArticleReadingProgress(input: $input) {
@@ -49,6 +49,28 @@ const SaveArticleReadingProgress = graphql(/* GraphQL */ `
   }
 `)
 
+const useSaveArticleReadingProgress = (id: string | null) => {
+  const [handle, executeMutation] = useMutation(SaveArticleReadingProgress)
+
+  const handlePageChange = useCallback(
+    (page: number, totalPage: number) => {
+      if (id) {
+        console.log(page, totalPage)
+
+        executeMutation({
+          input: {
+            id: id,
+            readingProgressPercent: ((page + 1) / totalPage),
+          },
+        })
+      }
+    },
+    [id, executeMutation]
+  )
+
+  return handlePageChange
+}
+
 export default function Page({ params }: { params: { slug: string; username: string } }) {
   const [{ data, fetching }] = useQuery({
     query: ArticleQuery,
@@ -62,36 +84,25 @@ export default function Page({ params }: { params: { slug: string; username: str
     requestPolicy: 'cache-first',
   })
 
-  const [handle, executeMutation] = useMutation(SaveArticleReadingProgress)
-
+  // parse the html into react component and apply custom elements and logic
   const [contentElement, toc] = useParseHTML(
     data?.article.__typename === 'ArticleSuccess' ? data.article.article.content : undefined
   )
 
   const [config] = useGlobalConfig()
 
-  const handlePageChange = useCallback(
-    (page: number, totalPage: number) => {
-      return 
-      // if (data?.article.__typename === 'ArticleSuccess') {
-      //   const id = data.article.article.id
-      //   executeMutation({
-      //     input: {
-      //       id: id,
-      //       readingProgressPercent: Math.round((page + 1) / totalPage),
-      //     },
-      //   })
-      // }
-    },
-    [data, executeMutation]
-  )
+  const id = useMemo(() => {
+    return data?.article.__typename === 'ArticleSuccess' ? data.article.article.id : null
+  }, [data])
+  const handlePageChange = useSaveArticleReadingProgress(id)
 
   if (data?.article.__typename === 'ArticleSuccess') {
-    const { title, url, siteName, savedAt, author, id } = data?.article.article
+    const { title, url, siteName, savedAt, author, id, readingProgressPercent } = data?.article.article
 
     return (
       <Pager
         menu={<PageNav linkId={id} slug={params.slug} username={params.username} />}
+        initialReadingProgressPercent={readingProgressPercent}
         onPageChange={handlePageChange}
       >
         <div className='prose'>
@@ -107,10 +118,6 @@ export default function Page({ params }: { params: { slug: string; username: str
         <article
           className={clsx(
             'prose prose-gray max-w-none',
-
-            //
-            'antialiased',
-
             // font size
             {
               'prose-sm': config.fontSize === 0,

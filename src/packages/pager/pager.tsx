@@ -1,41 +1,56 @@
 import { useRef, useState, useEffect, useCallback, PointerEventHandler } from 'react'
 import debug from 'debug'
-import { useKey, useWindowSize } from 'react-use'
+import { useKey } from 'react-use'
 import { useSwipeable } from 'react-swipeable'
 
 const log = debug('Pager')
 
 // TODO detect padding/gap by script
-const PAGE_GAP = 32
-const PAGE_PADDING = 16
 
-function getFrameWidth(el: HTMLElement) {
-  // Layout: padding - page1 - gap - page2 - gap .... - pageN - padding
-  return el.getBoundingClientRect().width - PAGE_PADDING * 2 + PAGE_GAP
+// support 2 columns and (rotation without real rotation)
+// feature: Software LandScape mode
+// feature: Kindle doesn't support landscape mode for it's browser
+
+type PagerProps = {
+  // the content to be paged
+  children: React.ReactNode
+
+  // overlay/menu component that will be toggled by tap/click
+  menu: React.ReactNode
+
+  // update while page changes
+  onPageChange: (c: number, t: number) => void
+  initialReadingProgressPercent?: number
+
+  columnsPerPage?: number
+
+  // padding can be set by CSS?
 }
 
 /**
  * the pager component takes any Content and then split it into pages
  */
-export const Pager = ({
+export const Pager: React.FC<PagerProps> = ({
   children,
   menu,
   onPageChange,
-}: {
-  children: React.ReactNode
-  menu: React.ReactNode
-  onPageChange: (c: number, t: number) => void
+  initialReadingProgressPercent,
+  columnsPerPage,
 }) => {
   log('start-render')
+  const pageGap = 32
+  const pagePadding = 32
 
   // page container ref
   const frameRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
 
-  const [[currentPage, totalPage], setPage] = useState<[number, number]>([0, 1])
-  const [menuVisible, setMenuVisible] = useState(true)
-  const { width, height } = useWindowSize()
+  const [[currentPage, totalPage], setPage] = useState<[number, number]>([
+    Math.round(initialReadingProgressPercent || 0),
+    100,
+  ])
 
+  const [menuVisible, setMenuVisible] = useState(true)
   // recalculate total page and current page
   useEffect(() => {
     if (!frameRef.current || !contentRef.current) {
@@ -46,13 +61,14 @@ export const Pager = ({
       if (!frameRef.current || !contentRef.current) {
         return
       }
+
       const node = frameRef.current
       const totalPage = Math.round((node.scrollWidth - node.offsetWidth) / node.offsetWidth + 1)
 
-      console.log('total-page', totalPage)
+      log('total-page', totalPage)
 
       setPage(([c, t]) => {
-        return [Math.round((c / t) * totalPage), totalPage]
+        return [Math.round(((c + 1) / t) * totalPage), totalPage]
       })
     })
 
@@ -85,10 +101,13 @@ export const Pager = ({
 
     debug('goingTo')(currentPage)
 
-    frameRef.current.scrollTo(getFrameWidth(frameRef.current) * currentPage, 0)
+    // Layout: padding - page1 - gap - page2 - gap .... - pageN - padding
+    const frameWidth = frameRef.current.getBoundingClientRect().width - pagePadding * 2 + pageGap
+
+    frameRef.current.scrollTo(frameWidth * currentPage, 0)
 
     onPageChange(currentPage, totalPage)
-  }, [currentPage, totalPage, onPageChange])
+  }, [currentPage, totalPage, onPageChange, pageGap])
 
   // Keyboard Shortcuts
   useKey('ArrowRight', nextPage, { event: 'keyup' }, [nextPage])
@@ -117,10 +136,8 @@ export const Pager = ({
     const frameWidth = frameRef.current.offsetWidth
 
     if (e.clientX < frameWidth / 3) {
-      // console.log('pageLeft', e.clientX, frameWidth)
       prevPage()
     } else if (e.clientX > (frameWidth / 3) * 2) {
-      // console.log('pageRight', e.clientX, frameWidth)
       nextPage()
     } else {
       setMenuVisible(!menuVisible)
@@ -128,13 +145,13 @@ export const Pager = ({
   }
 
   return (
-    <div {...handlers}>
+    <div className='h-screen w-screen' {...handlers}>
       <div
-        className='container p-4 mx-auto overflow-hidden'
+        className='overflow-hidden h-full'
         style={{
           columns: `${frameRef?.current?.offsetWidth || 100}px 1`,
-          columnGap: PAGE_GAP,
-          height: height,
+          columnGap: pageGap,
+          padding: `${pagePadding}px`
         }}
         ref={frameRef}
         onPointerUp={handleTap}
