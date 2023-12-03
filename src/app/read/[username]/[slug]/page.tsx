@@ -58,14 +58,15 @@ const useSaveArticleReadingProgress = (id: string | null) => {
   const handlePageChange = useCallback(
     (page: number, totalPage: number) => {
       if (id) {
-        log("handlePageChange", {
-          page, totalPage
+        log('handlePageChange', {
+          page,
+          totalPage,
         })
 
         executeMutation({
           input: {
             id: id,
-            readingProgressPercent: ((page + 1) / totalPage),
+            readingProgressPercent: (page + 1) / totalPage,
           },
         })
       }
@@ -102,7 +103,8 @@ export default function Page({ params }: { params: { slug: string; username: str
   const handlePageChange = useSaveArticleReadingProgress(id)
 
   if (data?.article.__typename === 'ArticleSuccess') {
-    const { title, url, siteName, savedAt, author, id, readingProgressPercent } = data?.article.article
+    const { title, url, siteName, savedAt, author, id, readingProgressPercent } =
+      data?.article.article
 
     return (
       <Pager

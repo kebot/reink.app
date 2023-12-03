@@ -39,7 +39,9 @@ export const PageNav = ({
 }) => {
   type Panel = 'font' | 'label' | 'more' | undefined
 
-  const [panel, setPanel] = useState<Panel>(undefined)
+  const [panel, setPanel] = useState<Panel>(
+    undefined
+  )
   const [archiveResult, executeMutation] = useMutation(SetLinkArchived)
   const router = useRouter()
 
@@ -64,7 +66,12 @@ export const PageNav = ({
     <>
       {panel === 'font' && <FontChooser />}
       {panel === 'label' && (
-        <LabelEditor handleClose={() => setPanel(undefined)} username={username} slug={slug} />
+        <LabelEditor
+          handleClose={() => setPanel(undefined)}
+          username={username}
+          slug={slug}
+          pageId={linkId}
+        />
       )}
 
       <div className='btm-nav border'>
