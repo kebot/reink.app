@@ -142,6 +142,9 @@ export default function Page({ params }: { params: { slug: string; username: str
             // underline style
             'prose-a:underline-offset-4 prose-a:decoration-1 prose-a:decoration-dotted',
 
+            // image
+            'prose-img:mx-auto',
+
             // font family
             config.fontFamily,
 
