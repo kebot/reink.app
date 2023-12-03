@@ -145,6 +145,9 @@ export default function Page({ params }: { params: { slug: string; username: str
             // image
             'prose-img:mx-auto',
 
+            // prevent table to be overflow on smaller size screens|columns
+            'prose-table:table-fixed prose-table:break-all',
+
             // font family
             config.fontFamily,
 

@@ -29,7 +29,7 @@ export function Span({ children, ...props }: React.ComponentProps<'span'>) {
   }, [children, ref])
 
   return (
-    <span ref={ref} {...props}>
+    <span ref={ref} {...props} className="overflow-hidden max-w-full inline-block">
       {children}
     </span>
   )
