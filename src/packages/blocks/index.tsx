@@ -19,6 +19,7 @@ import { Link } from './Link'
 import { Code } from './Code'
 import React, { useEffect, useMemo } from 'react'
 import { Image } from './Image'
+import { Span } from './Span'
 
 function Paragraph({ children, ...props }: React.ComponentProps<'p'>) {
   return <p {...props}>{children}</p>
@@ -30,6 +31,7 @@ tagMap.set('p', Paragraph)
 tagMap.set('code', Code)
 tagMap.set('a', Link)
 tagMap.set('img', Image)
+tagMap.set('span', Span)
 
 // site effect, while sanitize the html, it might be able to generate a table of content
 
@@ -85,6 +87,7 @@ export function useParseHTML(html: string | undefined): [ReturnType<typeof parse
       replace: replaceTag,
     })
 
+    // eslint-disable-next-line react/jsx-key
     return [node, tableOfContents]
   }, [html])
 }

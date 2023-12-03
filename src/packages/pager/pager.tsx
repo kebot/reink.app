@@ -159,7 +159,7 @@ export const Pager: React.FC<PagerProps> = ({
       <div
         className={clsx('overflow-hidden h-full', padding)}
         style={{
-          columns: columnsPerPage,
+          columns: `320px ${columnsPerPage}`,
           columnGap: pageGap,
         }}
         ref={frameRef}
