@@ -137,8 +137,8 @@ export default function Page({ params }: { params: { slug: string; username: str
             },
 
             // e-ink style for `code` and `pre` block
-            'prose-pre:inline prose-code:font-mono',
-            'prose-pre:bg-transparent prose-pre:text-black',
+            'prose-code:font-mono',
+            'prose-pre:inline prose-pre:p-0 prose-pre:bg-transparent prose-pre:text-black',
             // 'prose-pre:bg-gray-200 prose-pre:text-black',
 
 

@@ -2,7 +2,7 @@ import 'highlight.js/styles/default.css'
 import 'highlight.js/styles/grayscale.css'
 // import 'styles/highlight-print.css'
 
-import React, { HTMLAttributes } from 'react'
+import React from 'react'
 import clsx from 'clsx'
 
 export function Code({ children, ...props }: React.ComponentProps<'code'>) {
@@ -12,10 +12,10 @@ export function Code({ children, ...props }: React.ComponentProps<'code'>) {
       className={clsx(
         props.className,
         'theme-grayscale',
-        'whitespace-pre-wrap',
+        'indent-0',
         'inline',
+        'whitespace-pre-wrap',
         'hyphens-none',
-        'w-full',
         'break-all',
         'p-0'
       )}
