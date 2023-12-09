@@ -21,15 +21,13 @@ export function Span({ children, ...props }: React.ComponentProps<'span'>) {
           },
         })
       } catch (e) {
-        log('Can not render')
-        log(children)
-        log(e)
+        log('Can not render', children, e)
       }
     }
   }, [children, ref])
 
   return (
-    <span ref={ref} {...props} className="overflow-hidden max-w-full inline-block">
+    <span ref={ref} {...props}>
       {children}
     </span>
   )

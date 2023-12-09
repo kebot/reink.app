@@ -20,10 +20,7 @@ import { Code } from './Code'
 import React, { useEffect, useMemo } from 'react'
 import { Image } from './Image'
 import { Span } from './Span'
-
-function Paragraph({ children, ...props }: React.ComponentProps<'p'>) {
-  return <p {...props}>{children}</p>
-}
+import { Paragraph } from './Paragraph'
 
 const tagMap = new Map<string, React.FC<React.ComponentProps<any>>>()
 

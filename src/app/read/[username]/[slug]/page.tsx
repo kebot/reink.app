@@ -137,7 +137,10 @@ export default function Page({ params }: { params: { slug: string; username: str
             },
 
             // e-ink style for `code` and `pre` block
-            'prose-pre:bg-gray-200 prose-pre:text-black prose-code:font-mono',
+            'prose-pre:inline prose-code:font-mono',
+            'prose-pre:bg-transparent prose-pre:text-black',
+            // 'prose-pre:bg-gray-200 prose-pre:text-black',
+
 
             // underline style
             'prose-a:underline-offset-4 prose-a:decoration-1 prose-a:decoration-dotted',
