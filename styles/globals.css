@@ -57,3 +57,7 @@
   }
  }
 }
+
+.h-screen {
+    height: 100dvh!important;
+}
