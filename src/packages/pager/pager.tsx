@@ -131,6 +131,8 @@ export const Pager: React.FC<PagerProps> = ({
   const handlers = useSwipeable({
     onSwipedLeft: nextPage,
     onSwipedRight: prevPage,
+    onSwipedDown: nextPage,
+    onSwipedUp: prevPage,
     // onTouchStartOrOnMouseDown: (e) => {
     //   console.log(e)
     // },
