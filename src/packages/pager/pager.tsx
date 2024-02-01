@@ -122,6 +122,10 @@ export const Pager: React.FC<PagerProps> = ({
   // Keyboard Shortcuts
   useKey('ArrowRight', nextPage, { event: 'keyup' }, [nextPage])
   useKey('ArrowLeft', prevPage, { event: 'keyup' }, [prevPage])
+  useKey('ArrowDown', nextPage, { event: 'keyup' }, [nextPage])
+  useKey('ArrowUp', prevPage, { event: 'keyup' }, [prevPage])
+  useKey('PageDown', nextPage, { event: 'keyup' }, [nextPage])
+  useKey('PageUp', prevPage, { event: 'keyup' }, [prevPage])
 
   // Touch Gesture
   const handlers = useSwipeable({
