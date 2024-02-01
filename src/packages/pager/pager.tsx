@@ -51,7 +51,7 @@ export const Pager: React.FC<PagerProps> = ({
     100,
   ])
 
-  const [menuVisible, setMenuVisible] = useState(true)
+  const [menuVisible, setMenuVisible] = useState(false)
 
   useEffect(() => {
     if (!frameRef.current || !contentRef.current) {
@@ -131,8 +131,8 @@ export const Pager: React.FC<PagerProps> = ({
   const handlers = useSwipeable({
     onSwipedLeft: nextPage,
     onSwipedRight: prevPage,
-    onSwipedDown: nextPage,
-    onSwipedUp: prevPage,
+    onSwipedUp: nextPage,
+    onSwipedDown: prevPage,
     // onTouchStartOrOnMouseDown: (e) => {
     //   console.log(e)
     // },
