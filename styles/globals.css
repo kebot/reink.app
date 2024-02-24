@@ -1,3 +1,63 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root,
+[data-theme] {
+ background-color:var(--fallback-b1,oklch(var(--b1)/1));
+ color:var(--fallback-bc,oklch(var(--bc)/1))
+}
+@supports not (color:oklch(0 0 0)) {
+ :root {
+  color-scheme:light;
+  --fallback-p:#000;
+  --fallback-pc:#d4dbff;
+  --fallback-s:#000e0c;
+  --fallback-sc:#fff9fc;
+  --fallback-a:#868686;
+  --fallback-ac:#00100d;
+  --fallback-n:#2b3440;
+  --fallback-nc:#d7dde4;
+  --fallback-b1:#fff;
+  --fallback-b2:#e5e6e6;
+  --fallback-b3:#e5e6e6;
+  --fallback-bc:#1f2937;
+  --fallback-in:#00b3f0;
+  --fallback-inc:#000;
+  --fallback-su:#00ca92;
+  --fallback-suc:#000;
+  --fallback-wa:#ffc22d;
+  --fallback-wac:#000;
+  --fallback-er:#ff6f70;
+  --fallback-erc:#000
+ }
+ @media (prefers-color-scheme:dark) {
+  :root {
+   color-scheme:dark;
+   --fallback-p: #fff;
+   --fallback-pc: #050617;
+   --fallback-s: #ff71cf;
+   --fallback-sc: #190211;
+   --fallback-a: #888;
+   --fallback-ac: #000e0c;
+   --fallback-n: #2a323c;
+   --fallback-nc: #a6adbb;
+   --fallback-b1: #000;
+   --fallback-b2: #191e24;
+   --fallback-b3: #15191e;
+   --fallback-bc: #a6adbb;
+   --fallback-in: #00b3f0;
+   --fallback-inc: #000;
+   --fallback-su: #00ca92;
+   --fallback-suc: #000;
+   --fallback-wa: #ffc22d;
+   --fallback-wac: #000;
+   --fallback-er: #ff6f70;
+   --fallback-erc: #000
+  }
+ }
+}
+
+.h-screen {
+    height: 100dvh!important;
+}

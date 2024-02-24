@@ -17,6 +17,7 @@ module.exports = {
 
   daisyui: {
     themes: ['lofi'],
+    darkTheme: "black",
   },
 
   // tweak some browsers
