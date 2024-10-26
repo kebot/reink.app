@@ -86,7 +86,7 @@ const ArticleList: React.FC<{
                   <div>
                     <h3 className='font-sans font-bold text-lg text-primary'>{title}</h3>
 
-                    <p className='font-serif text-primary'>{description}</p>
+                    <p className='font-serif text-primary line-clamp-3'>{description}</p>
 
                     <div className='font-mono text-sm font-thin text-primary'>
                       <span>{formatDistanceToNow(new Date(savedAt))}</span>
